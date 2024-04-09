@@ -116,14 +116,14 @@ const currentPage = ref(1)
 //请求 查询岗位列表
 const GetList = (pageNum, pageSize) => {
   // 网络请求数据
-  axios.get("/changyuan/admin/query/product/list", {
+  axios.get("/changyuan/admin/article/list", {
     params: {
       pageNum: pageNum,
       pageSize: pageSize
     }
   }).then((response) => {
     tableData.value = response.data.list
-    // console.log("查询产品信息", response.data)
+     console.log("查询产品信息", response.data)
     //总数据量
     total.value = response.data.total
     currentPage.value = pageNum
@@ -188,39 +188,39 @@ const options = [
 const operation = ref(options[0].value)
 //操作类型改变
 const typeChange = () => {
-  formData.value = {
-    "productId": "",
-    "productName": "",
-    "productIntroduce": "",
-    "honorImgUrl": "",
-    "platformImgUrl": "",
-    "screenshotImgUrl": "",
-    "videoUrl": "",
-    "productLogoUrl": ""
-  }
-  if (operation.value === "搜索") {
-    formDataDisabled.value = {
-      "productId": false,
-      "productName": false,
-      "productIntroduce": true,
-      "honorImgUrl": true,
-      "platformImgUrl": true,
-      "screenshotImgUrl": true,
-      "videoUrl": true,
-      "productLogoUrl": true
-    }
-  } else {
-    formDataDisabled.value = {
-      "productId": true,
-      "productName": false,
-      "productIntroduce": false,
-      "honorImgUrl": false,
-      "platformImgUrl": false,
-      "screenshotImgUrl": false,
-      "videoUrl": false,
-      "productLogoUrl": false
-    }
-  }
+  // formData.value = {
+  //   "productId": "",
+  //   "productName": "",
+  //   "productIntroduce": "",
+  //   "honorImgUrl": "",
+  //   "platformImgUrl": "",
+  //   "screenshotImgUrl": "",
+  //   "videoUrl": "",
+  //   "productLogoUrl": ""
+  // }
+  // if (operation.value === "搜索") {
+  //   formDataDisabled.value = {
+  //     "productId": false,
+  //     "productName": false,
+  //     "productIntroduce": true,
+  //     "honorImgUrl": true,
+  //     "platformImgUrl": true,
+  //     "screenshotImgUrl": true,
+  //     "videoUrl": true,
+  //     "productLogoUrl": true
+  //   }
+  // } else {
+  //   formDataDisabled.value = {
+  //     "productId": true,
+  //     "productName": false,
+  //     "productIntroduce": false,
+  //     "honorImgUrl": false,
+  //     "platformImgUrl": false,
+  //     "screenshotImgUrl": false,
+  //     "videoUrl": false,
+  //     "productLogoUrl": false
+  //   }
+  // }
 }
 //确认按钮
 const confirm = () => {
@@ -237,96 +237,62 @@ const confirm = () => {
 const seek = async () => {
   console.log("搜索")
   console.log(formData.value)
-  //判断 id 不为空id不重复
-  elTableDate.value = []
-  //存放那个请求 请求成功
-  const succeed = ref([false, false])
-  //岗位id 不为空 请求 搜索
-  if (formData.value.productId !== "") {
-    await axios.get("/changyuan/admin/query/productsById/" + formData.value.productId).then((response) => {
-      elTableDate.value.unshift(response.data)
-      succeed.value[0] = true
-    }).catch((err) => {
-      console.log("搜索id错误", err)
-    })
-  }
-  //岗位名称 不为空 请求 搜索
-  if (formData.value.productName !== "") {
-    await axios.get("/changyuan/admin/query/productByName/" + formData.value.productName).then((response) => {
-      elTableDate.value.unshift(response.data)
-      succeed.value[1] = true
-    }).catch((err) => {
-      console.log("搜索岗位名称错误", err)
-    })
-  }
-
-  //岗位id 或 岗位名称  请求成功 提示
-  if (succeed.value[0] || succeed.value[1]) {
-    ElMessage({
-      message: '搜索成功',
-      type: 'success',
-    })
-  }
-  // 输入框 都为空 展示原始数据
-  if (formData.value.productId === "" && formData.value.productName === "") {
-    elTableDate.value = tableData.value
-  }
 }
 //点击设置 输入框获取值
 const GetSetData = (scope) => {
   //更改操作类型
   operation.value = options[2].value
   typeChange()
-  formData.value = {
-    "productId": scope.row.productId,
-    "productName": scope.row.productName,
-    "productIntroduce": scope.row.productIntroduce,
-    "honorImgUrl": scope.row.honorImgUrlList.toString(),
-    "platformImgUrl": scope.row.platformImgUrlList.toString(),
-    "screenshotImgUrl": scope.row.screenshotImgUrlList.toString(),
-    "videoUrl": scope.row.videoUrl,
-    "productLogoUrl": scope.row.productLogoUrl
-  }
-  console.log("修改", scope)
+  // formData.value = {
+  //   "productId": scope.row.productId,
+  //   "productName": scope.row.productName,
+  //   "productIntroduce": scope.row.productIntroduce,
+  //   "honorImgUrl": scope.row.honorImgUrlList.toString(),
+  //   "platformImgUrl": scope.row.platformImgUrlList.toString(),
+  //   "screenshotImgUrl": scope.row.screenshotImgUrlList.toString(),
+  //   "videoUrl": scope.row.videoUrl,
+  //   "productLogoUrl": scope.row.productLogoUrl
+  // }
+  // console.log("修改", scope)
 }
 
 //修改
 const setData = async () => {
-  if (IsEmpty()) {
-    await axios.put("/changyuan/admin/product/update", formData.value).then(() => {
-      ElMessage({
-        message: '修改产品信息成功',
-        type: 'success',
-      })
-      GetList(1, 5)
-    }).catch((err) => {
-      ElMessage({
-        message: '修改产品信息失败',
-        type: 'warning',
-      })
-      console.log("修改产品信息错误", err)
-    })
-  }
+  // if (IsEmpty()) {
+  //   await axios.put("/changyuan/admin/product/update", formData.value).then(() => {
+  //     ElMessage({
+  //       message: '修改产品信息成功',
+  //       type: 'success',
+  //     })
+  //     GetList(1, 5)
+  //   }).catch((err) => {
+  //     ElMessage({
+  //       message: '修改产品信息失败',
+  //       type: 'warning',
+  //     })
+  //     console.log("修改产品信息错误", err)
+  //   })
+  // }
 }
 
 
 //新建
 const addData = async () => {
-  if (IsEmpty()) {
-    await axios.post("/changyuan/admin/product/add", formData.value).then(() => {
-      ElMessage({
-        message: '新建产品信息成功',
-        type: 'success',
-      })
-      GetList(1, 5)
-    }).catch((err) => {
-      ElMessage({
-        message: '新建产品信息失败',
-        type: 'warning',
-      })
-      console.log("新建产品信息错误", err)
-    })
-  }
+  // if (IsEmpty()) {
+  //   await axios.post("/changyuan/admin/product/add", formData.value).then(() => {
+  //     ElMessage({
+  //       message: '新建产品信息成功',
+  //       type: 'success',
+  //     })
+  //     GetList(1, 5)
+  //   }).catch((err) => {
+  //     ElMessage({
+  //       message: '新建产品信息失败',
+  //       type: 'warning',
+  //     })
+  //     console.log("新建产品信息错误", err)
+  //   })
+  // }
 }
 // 判断输入框 是否为空
 const IsEmpty = () => {
@@ -348,28 +314,28 @@ const IsEmpty = () => {
 
 //删除
 const deleteData = (scope) => {
-  axios.delete("/changyuan/admin/product/delete/" + scope.row.productId).then((response) => {
-    console.log(response.data)
-    if (response.data.code === 500) {
-      ElMessage({
-        message: '删除产品信息失败！',
-        type: 'error',
-      })
-    } else if (response.data.code === 200) {
-      ElMessage({
-        message: '删除产品信息成功',
-        type: 'success',
-      })
-    }
-  }).catch((err) => {
-    ElMessage({
-      message: '删除产品信息失败！',
-      type: 'error',
-    })
-    console.log("删除岗位信息错误", err)
-  }).finally(() => {
-    GetList(1, 5)
-  })
+  // axios.delete("/changyuan/admin/product/delete/" + scope.row.productId).then((response) => {
+  //   console.log(response.data)
+  //   if (response.data.code === 500) {
+  //     ElMessage({
+  //       message: '删除产品信息失败！',
+  //       type: 'error',
+  //     })
+  //   } else if (response.data.code === 200) {
+  //     ElMessage({
+  //       message: '删除产品信息成功',
+  //       type: 'success',
+  //     })
+  //   }
+  // }).catch((err) => {
+  //   ElMessage({
+  //     message: '删除产品信息失败！',
+  //     type: 'error',
+  //   })
+  //   console.log("删除岗位信息错误", err)
+  // }).finally(() => {
+  //   GetList(1, 5)
+  // })
 }
 </script>
 
