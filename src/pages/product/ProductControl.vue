@@ -64,9 +64,9 @@
     <div>
       <el-table border :data="elTableDate" style="width: 100%;height: 238px" show-overflow-tooltip>
         <el-table-column prop="productId" label="ID"/>
-        <el-table-column prop="productName" label="产品名称"/>
-        <el-table-column prop="productLogoUrl" label="产品主图地址"/>
-        <el-table-column prop="productIntroduce" label="产品介绍"/>
+        <el-table-column prop="productName" label="名称"/>
+        <el-table-column prop="productLogoUrl" label="主图地址"/>
+        <el-table-column prop="productIntroduce" label="介绍"/>
         <el-table-column prop="honorImgUrlList" label="荣誉图地址集合"/>
         <el-table-column prop="platformImgUrlList" label="平台二维码截图"/>
         <el-table-column prop="videoUrl" label="视频地址"/>
@@ -253,7 +253,7 @@ const seek = async () => {
   //岗位名称 不为空 请求 搜索
   if (formData.value.productName !== "") {
     await axios.get("/changyuan/admin/query/productByName/" + formData.value.productName).then((response) => {
-      elTableDate.value.unshift(response.data)
+      elTableDate.value.unshift(...response.data)
       succeed.value[1] = true
     }).catch((err) => {
       console.log("搜索岗位名称错误", err)

@@ -1,7 +1,7 @@
 <template>
   <div class="ProductControl">
     <div style="display: flex;align-items: center; justify-content: space-between;">
-      <div class="headline"><p style="background-color: #84c1ff"></p> 产品模块</div>
+      <div class="headline"><p style="background-color: #2df65c"></p> 文章模块</div>
       <div>
         <el-button style="float: right" type="primary" plain @click="confirm">确认
         </el-button>
@@ -19,42 +19,61 @@
           </el-select>
         </div>
         <div>
-          <span>产品id</span>
-          <el-input :disabled="formDataDisabled.productId" placeholder="产品id" v-model="formData.productId"/>
+          <span>文章id</span>
+          <el-input :disabled="formDataDisabled.articleId" placeholder="文章id" v-model="formData.articleId"/>
         </div>
         <div>
-          <span>产品名称</span>
-          <el-input :disabled="formDataDisabled.productName" placeholder="产品名称" v-model="formData.productName"/>
+          <span>标题</span>
+          <el-input :disabled="formDataDisabled.articleTitle" placeholder="标题"
+                    v-model="formData.articleTitle"/>
         </div>
         <div>
-          <span>产品图标地址</span>
-          <el-input :disabled="formDataDisabled.productLogoUrl" placeholder="产品图标地址"
-                    v-model="formData.productLogoUrl"/>
+          <span>类别</span>
+          <el-input :disabled="formDataDisabled.categoryId" placeholder="类别id" v-model="formData.categoryId"/>
         </div>
         <div>
-          <span>荣誉图地址</span>
-          <el-input :disabled="formDataDisabled.honorImgUrl" placeholder="荣誉图地址(以逗号分割为一个地址)"
-                    v-model="formData.honorImgUrl"/>
+          <span>作者</span>
+          <el-input :disabled="formDataDisabled.author" placeholder="作者"
+                    v-model="formData.author"/>
         </div>
         <div>
-          <span>平台二维码地址</span>
-          <el-input :disabled="formDataDisabled.platformImgUrl" placeholder="平台二维码址(以逗号分割为一个地址)"
-                    v-model="formData.platformImgUrl"/>
+          <span>简介</span>
+          <el-input :disabled="formDataDisabled.articleIntroduc" placeholder="简介"
+                    v-model="formData.articleIntroduc"/>
         </div>
         <div>
-          <span>作品截图地址</span>
-          <el-input :disabled="formDataDisabled.screenshotImgUrl" placeholder="作品截图地址(以逗号分割为一个地址)"
-                    v-model="formData.screenshotImgUrl"/>
+          <span>主图路径</span>
+          <el-input :disabled="formDataDisabled.articleImgUrl" placeholder="主图路径"
+                    v-model="formData.articleImgUrl"/>
         </div>
         <div>
-          <span>视频地址</span>
-          <el-input :disabled="formDataDisabled.videoUrl" placeholder="作品截图地址(以逗号分割为一个地址)"
-                    v-model="formData.videoUrl"/>
+          <span>创建时间</span>
+          <el-date-picker
+              v-model="formData.createDate"
+              :disabled="formDataDisabled.createDate"
+              type="date"
+              placeholder="创建时间"
+              size="default"
+          />
+          <!--          <el-input :disabled="formDataDisabled.createDate" placeholder="创建时间"-->
+          <!--                    v-model="formData.createDate"/>-->
         </div>
         <div>
-          <span>产品介绍</span>
-          <el-input :disabled="formDataDisabled.productIntroduce" placeholder="产品介绍"
-                    v-model="formData.productIntroduce" style="width: 90%"
+          <span>修改时间</span>
+          <el-date-picker
+              v-model="formData.updateDate"
+              :disabled="formDataDisabled.updateDate"
+              type="date"
+              placeholder="修改时间"
+              size="default"
+          />
+<!--          <el-input :disabled="formDataDisabled.updateDate" placeholder="修改时间"-->
+<!--                    v-model="formData.updateDate"/>-->
+        </div>
+        <div>
+          <span>文章内容</span>
+          <el-input :disabled="formDataDisabled.articleContent" placeholder="文章内容"
+                    v-model="formData.articleContent" style="width: 90%"
                     autosize
                     type="textarea"/>
         </div>
@@ -63,14 +82,15 @@
     <!-- 表格-->
     <div>
       <el-table border :data="elTableDate" style="width: 100%;height: 238px" show-overflow-tooltip>
-        <el-table-column prop="productId" label="ID"/>
-        <el-table-column prop="productName" label="产品名称"/>
-        <el-table-column prop="productLogoUrl" label="产品主图地址"/>
-        <el-table-column prop="productIntroduce" label="产品介绍"/>
-        <el-table-column prop="honorImgUrlList" label="荣誉图地址集合"/>
-        <el-table-column prop="platformImgUrlList" label="平台二维码截图"/>
-        <el-table-column prop="videoUrl" label="视频地址"/>
-        <el-table-column prop="screenshotImgUrlList" label="作品截图地址集合"/>
+        <el-table-column prop="articleId" label="ID"/>
+        <el-table-column prop="articleTitle" label="标题"/>
+        <el-table-column prop="categoryId" label="类别id"/>
+        <el-table-column prop="articleContent" label="内容"/>
+        <el-table-column prop="author" label="作者"/>
+        <el-table-column prop="articleIntroduc" label="简介"/>
+        <el-table-column prop="articleImgUrl" label="主图路径"/>
+        <el-table-column prop="createDate" label="创建时间"/>
+        <el-table-column prop="updateDate" label="修改时间"/>
         <el-table-column label="编辑" fixed="right" width="100">
           <template #default="scope">
             <el-popconfirm title="确认删除?" @confirm="deleteData(scope)">
@@ -100,20 +120,23 @@ import {ElMessage} from 'element-plus'
 
 // 存放网络获取的数据
 const tableData = ref([{
-  "productId": 1,
-  "productName": "实习宝(测试)",
-  "productIntroduce": "“实习宝”是一款专业的企业实践管理系统 ，借助5G时代和高速发展的软件技术，为学生和指导老师提供了统一便捷的协作平台。/n本项目对职业教育中学生的实习期进行了全 流程化管理，以方便高效为目标，以解决实际问题为己任，以数字化发展为契机开启职 业教育数字赋能之路。/n本项目深入实习一线调研，功能直击实习痛 点，可大幅度提升技工院校实习管理团队的工作效率，辅助未来决策，具有极高的推广 应用价值。",
-  "honorImgUrlList": ["img/b实习宝奖状1.png", "img/b实习宝奖状2.png", "img/b实习宝奖状3.png"],
-  "platformImgUrlList": ["/img/b创造实习宝教师端.png", "/img/b创造实习宝学生端.png"],
-  "productLogoUrl": "/img/b创造long1.png",
-  "videoUrl": "/img/实习宝宣讲视频（40S）.mp4",
-  "screenshotImgUrlList": [""]
+  "articleId": 1,
+  "categoryId": 0,
+  "articleTitle": "A+闯关挑战(测试)",
+  "articleContent": "陈肖均同学叙述他在长远遇见的无限可能，用独特的视角展示创新与坚持的力量\r\n\r\n",
+  "author": "陈肖均",
+  "CreateDate": "2024-03-21",
+  "UpdateDate": "2024-03-21",
+  "articleIntroduc": "陈肖均同学叙述他在长远遇见的无限可能，用独特的视角展示创新与坚持的力量",
+  "articleImgUrl": "img/A+文章图.png",
+  "updateDate": "2024-03-21",
+  "createDate": "2024-03-21"
 }])
 //总数据量
 const total = ref(5)
 //页面
 const currentPage = ref(1)
-//请求 查询岗位列表
+//请求 查询文章列表
 const GetList = (pageNum, pageSize) => {
   // 网络请求数据
   axios.get("/changyuan/admin/article/list", {
@@ -123,12 +146,12 @@ const GetList = (pageNum, pageSize) => {
     }
   }).then((response) => {
     tableData.value = response.data.list
-     console.log("查询产品信息", response.data)
+   // console.log("查询文章列表", response.data)
     //总数据量
     total.value = response.data.total
     currentPage.value = pageNum
   }).catch((err) => {
-    console.log("查询产品信息错误", err)
+    console.log("查询文章列表错误", err)
     ElMessage.error(err.message)
   }).finally(() => {
     elTableDate.value = tableData.value
@@ -146,25 +169,27 @@ const currentChange = (n) => {
 
 //存放输入框数据
 const formData = ref({
-  "productId": "",
-  "productName": "",
-  "productIntroduce": "",
-  "honorImgUrl": "",
-  "platformImgUrl": "",
-  "screenshotImgUrl": "",
-  "videoUrl": "",
-  "productLogoUrl": ""
+  "articleId": "",
+  "categoryId": "",
+  "articleTitle": "",
+  "articleContent": "",
+  "author": "",
+  "articleIntroduc": "",
+  "articleImgUrl": "",
+  "updateDate": new Date(),
+  "createDate": new Date()
 })
 //控制输入框是否禁用
 const formDataDisabled = ref({
-  "productId": false,
-  "productName": false,
-  "productIntroduce": true,
-  "honorImgUrl": true,
-  "platformImgUrl": true,
-  "screenshotImgUrl": true,
-  "videoUrl": true,
-  "productLogoUrl": true
+  "articleId": false,
+  "categoryId": true,
+  "articleTitle": false,
+  "articleContent": true,
+  "author": true,
+  "articleIntroduc": true,
+  "articleImgUrl": true,
+  "updateDate": true,
+  "createDate": true
 })
 
 // 存放操作的类型
@@ -188,39 +213,42 @@ const options = [
 const operation = ref(options[0].value)
 //操作类型改变
 const typeChange = () => {
-  // formData.value = {
-  //   "productId": "",
-  //   "productName": "",
-  //   "productIntroduce": "",
-  //   "honorImgUrl": "",
-  //   "platformImgUrl": "",
-  //   "screenshotImgUrl": "",
-  //   "videoUrl": "",
-  //   "productLogoUrl": ""
-  // }
-  // if (operation.value === "搜索") {
-  //   formDataDisabled.value = {
-  //     "productId": false,
-  //     "productName": false,
-  //     "productIntroduce": true,
-  //     "honorImgUrl": true,
-  //     "platformImgUrl": true,
-  //     "screenshotImgUrl": true,
-  //     "videoUrl": true,
-  //     "productLogoUrl": true
-  //   }
-  // } else {
-  //   formDataDisabled.value = {
-  //     "productId": true,
-  //     "productName": false,
-  //     "productIntroduce": false,
-  //     "honorImgUrl": false,
-  //     "platformImgUrl": false,
-  //     "screenshotImgUrl": false,
-  //     "videoUrl": false,
-  //     "productLogoUrl": false
-  //   }
-  // }
+  formData.value = {
+    "articleId": "",
+    "categoryId": "",
+    "articleTitle": "",
+    "articleContent": "",
+    "author": "",
+    "articleIntroduc": "",
+    "articleImgUrl": "",
+    "updateDate": new Date(),
+    "createDate": new Date()
+  }
+  if (operation.value === "搜索") {
+    formDataDisabled.value = {
+      "articleId": false,
+      "categoryId": true,
+      "articleTitle": false,
+      "articleContent": true,
+      "author": true,
+      "articleIntroduc": true,
+      "articleImgUrl": true,
+      "updateDate": true,
+      "createDate": true
+    }
+  } else {
+    formDataDisabled.value = {
+      "articleId": true,
+      "categoryId": false,
+      "articleTitle": false,
+      "articleContent": false,
+      "author": false,
+      "articleIntroduc": false,
+      "articleImgUrl": false,
+      "updateDate": false,
+      "createDate": false
+    }
+  }
 }
 //确认按钮
 const confirm = () => {
@@ -236,70 +264,105 @@ const confirm = () => {
 //搜索
 const seek = async () => {
   console.log("搜索")
-  console.log(formData.value)
+  //判断 id 不为空id不重复
+  elTableDate.value = []
+  //存放那个请求 请求成功
+  const succeed = ref([false, false])
+  //岗位id 不为空 请求 搜索
+  if (formData.value.articleId !== "") {
+    await axios.get("/changyuan/admin/articleById/" + formData.value.articleId).then((response) => {
+      elTableDate.value.unshift(response.data)
+      succeed.value[0] = true
+    }).catch((err) => {
+      console.log("搜索id错误", err)
+    })
+  }
+  //岗位名称 不为空 请求 搜索
+  if (formData.value.articleTitle !== "") {
+    await axios.get("/changyuan/admin/articleByTitle/" + formData.value.articleTitle).then((response) => {
+      elTableDate.value.unshift(...response.data)
+      succeed.value[1] = true
+    }).catch((err) => {
+      console.log("搜索名称错误", err)
+    })
+  }
+
+  //岗位id 或 岗位名称  请求成功 提示
+  if (succeed.value[0] || succeed.value[1]) {
+    ElMessage({
+      message: '搜索成功',
+      type: 'success',
+    })
+  }
+  // 输入框 都为空 展示原始数据
+  if (formData.value.articleId === "" && formData.value.articleTitle === "") {
+    elTableDate.value = tableData.value
+  }
 }
 //点击设置 输入框获取值
 const GetSetData = (scope) => {
   //更改操作类型
   operation.value = options[2].value
   typeChange()
-  // formData.value = {
-  //   "productId": scope.row.productId,
-  //   "productName": scope.row.productName,
-  //   "productIntroduce": scope.row.productIntroduce,
-  //   "honorImgUrl": scope.row.honorImgUrlList.toString(),
-  //   "platformImgUrl": scope.row.platformImgUrlList.toString(),
-  //   "screenshotImgUrl": scope.row.screenshotImgUrlList.toString(),
-  //   "videoUrl": scope.row.videoUrl,
-  //   "productLogoUrl": scope.row.productLogoUrl
-  // }
+  formData.value = {
+    "articleId": scope.row.articleId,
+    "categoryId": scope.row.categoryId,
+    "articleTitle": scope.row.articleTitle,
+    "articleContent": scope.row.articleContent,
+    "author": scope.row.author,
+    "articleIntroduc": scope.row.articleIntroduc,
+    "articleImgUrl": scope.row.articleImgUrl,
+    "updateDate": scope.row.updateDate,
+    "createDate": scope.row.createDate
+  }
   // console.log("修改", scope)
 }
 
 //修改
 const setData = async () => {
-  // if (IsEmpty()) {
-  //   await axios.put("/changyuan/admin/product/update", formData.value).then(() => {
-  //     ElMessage({
-  //       message: '修改产品信息成功',
-  //       type: 'success',
-  //     })
-  //     GetList(1, 5)
-  //   }).catch((err) => {
-  //     ElMessage({
-  //       message: '修改产品信息失败',
-  //       type: 'warning',
-  //     })
-  //     console.log("修改产品信息错误", err)
-  //   })
-  // }
+  if (IsEmpty()) {
+    await axios.put("/changyuan/admin/article/update", formData.value).then(() => {
+      ElMessage({
+        message: '修改文章成功',
+        type: 'success',
+      })
+      GetList(1, 5)
+    }).catch((err) => {
+      ElMessage({
+        message: '修改文章失败',
+        type: 'warning',
+      })
+      console.log("修改文章错误", err)
+    })
+  }
 }
 
 
-//新建
+//新增文章
 const addData = async () => {
-  // if (IsEmpty()) {
-  //   await axios.post("/changyuan/admin/product/add", formData.value).then(() => {
-  //     ElMessage({
-  //       message: '新建产品信息成功',
-  //       type: 'success',
-  //     })
-  //     GetList(1, 5)
-  //   }).catch((err) => {
-  //     ElMessage({
-  //       message: '新建产品信息失败',
-  //       type: 'warning',
-  //     })
-  //     console.log("新建产品信息错误", err)
-  //   })
-  // }
+  console.log(formData.value)
+  if (IsEmpty()) {
+    await axios.post("/changyuan/admin/article/add", formData.value).then(() => {
+      ElMessage({
+        message: '新增文章成功',
+        type: 'success',
+      })
+      GetList(1, 5)
+    }).catch((err) => {
+      ElMessage({
+        message: '新增文章失败',
+        type: 'warning',
+      })
+      console.log("新增文章错误", err)
+    })
+  }
 }
 // 判断输入框 是否为空
 const IsEmpty = () => {
   const temp = ref(true)
   for (let key in formData.value) {
-    if (key === 'productName' || key === 'productIntroduce' || key === 'productLogoUrl') {
-      if (formData.value[key].replace(/(^\s*)|(\s*$)/g, '') === "") {
+    if (key !== "articleId") {
+      if (formData.value[key].toString().replace(/(^\s*)|(\s*$)/g, '') === "") {
         temp.value = false
         ElMessage({
           message: '输入框不能为空!' + key,
@@ -314,28 +377,27 @@ const IsEmpty = () => {
 
 //删除
 const deleteData = (scope) => {
-  // axios.delete("/changyuan/admin/product/delete/" + scope.row.productId).then((response) => {
-  //   console.log(response.data)
-  //   if (response.data.code === 500) {
-  //     ElMessage({
-  //       message: '删除产品信息失败！',
-  //       type: 'error',
-  //     })
-  //   } else if (response.data.code === 200) {
-  //     ElMessage({
-  //       message: '删除产品信息成功',
-  //       type: 'success',
-  //     })
-  //   }
-  // }).catch((err) => {
-  //   ElMessage({
-  //     message: '删除产品信息失败！',
-  //     type: 'error',
-  //   })
-  //   console.log("删除岗位信息错误", err)
-  // }).finally(() => {
-  //   GetList(1, 5)
-  // })
+  axios.delete("/changyuan/admin/article/delete/" + scope.row.articleId).then((response) => {
+    if (response.data.code === 500) {
+      ElMessage({
+        message: '删除文章失败！',
+        type: 'error',
+      })
+    } else if (response.data.code === 200) {
+      ElMessage({
+        message: '删除文章成功',
+        type: 'success',
+      })
+    }
+  }).catch((err) => {
+    ElMessage({
+      message: '删除文章失败！',
+      type: 'error',
+    })
+    console.log("删除文章错误", err)
+  }).finally(() => {
+    GetList(1, 5)
+  })
 }
 </script>
 

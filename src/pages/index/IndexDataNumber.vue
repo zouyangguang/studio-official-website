@@ -1,7 +1,7 @@
 <template>
   <div class="IndexData">
     <div style="display: flex;align-items: center; justify-content: space-between;">
-      <div class="headline"><p style="background-color: #84c1ff"></p> 岗位信息</div>
+      <div class="headline"><p style="background-color: #e884ff"></p> 岗位信息</div>
       <div>
         <el-button style="float: right" type="primary" plain @click="confirm">确认</el-button>
       </div>
@@ -18,15 +18,15 @@
           </el-select>
         </div>
         <div>
-          <span>岗位id</span>
-          <el-input :disabled="formDataDisabled.positionId" placeholder="岗位id" v-model="formData.positionId"/>
+          <span>ID</span>
+          <el-input :disabled="formDataDisabled.positionId" placeholder="ID" v-model="formData.positionId"/>
         </div>
         <div>
-          <span>岗位名称</span>
+          <span>名称</span>
           <el-input :disabled="formDataDisabled.positionName" placeholder="岗位名称" v-model="formData.positionName"/>
         </div>
         <div>
-          <span>岗位描述集合</span>
+          <span>描述集合</span>
           <el-tooltip content="示例: java,Node.js,Python" placement="top">
             <el-input :disabled="formDataDisabled.positionDescriptionList"
                       placeholder="岗位描述数组(英文逗号分割)"
@@ -34,12 +34,12 @@
           </el-tooltip>
         </div>
         <div>
-          <span>岗位主图路径</span>
+          <span>主图路径</span>
           <el-input :disabled="formDataDisabled.positionImgUrl" placeholder="岗位主图路径"
                     v-model="formData.positionImgUrl"/>
         </div>
         <div>
-          <span>岗位介绍</span>
+          <span>介绍</span>
           <el-input :disabled="formDataDisabled.positionIntroduce" placeholder="岗位介绍"
                     v-model="formData.positionIntroduce" style="width: 90%"
                     autosize
@@ -50,10 +50,10 @@
     <div class="IndexDataTab">
       <el-table border :data="elTableDate" style="width: 100%;height: 238px" show-overflow-tooltip>
         <el-table-column prop="positionId" label="ID"/>
-        <el-table-column prop="positionName" label="岗位名称"/>
-        <el-table-column prop="positionIntroduce" label="岗位介绍"/>
-        <el-table-column prop="positionImgUrl" label="岗位主图路径"/>
-        <el-table-column prop="positionDescriptionList" label="岗位描述"/>
+        <el-table-column prop="positionName" label="名称"/>
+        <el-table-column prop="positionIntroduce" label="介绍"/>
+        <el-table-column prop="positionImgUrl" label="主图路径"/>
+        <el-table-column prop="positionDescriptionList" label="描述集合"/>
         <el-table-column label="编辑" fixed="right" width="100">
           <template #default="scope">
             <el-popconfirm title="确认删除?" @confirm="deleteData(scope)">
@@ -128,7 +128,7 @@ const GetList = (pageNum, pageSize) => {
     }
   }).then((response) => {
     tableData.value = response.data.list
-    console.log("查询岗位列表", response.data)
+    //console.log("查询岗位列表", response.data)
     //总数据量
     total.value = response.data.total
     currentPage.value = pageNum
@@ -222,7 +222,7 @@ const seek = async () => {
   //岗位名称 不为空 请求 搜索
   if (formData.value.positionName !== "") {
     await axios.get("/changyuan/admin/query/positionByName/" + formData.value.positionName).then((response) => {
-      elTableDate.value.unshift(response.data)
+      elTableDate.value.unshift(...response.data)
       succeed.value[1] = true
     }).catch((err) => {
       console.log("搜索岗位名称错误", err)

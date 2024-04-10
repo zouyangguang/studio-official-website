@@ -47,12 +47,12 @@
 <!--      <el-menu-item>页面2</el-menu-item>-->
 <!--    </el-sub-menu>-->
 
-    <!--    <el-menu-item>-->
-    <!--      <el-icon>-->
-    <!--        <Sugar/>-->
-    <!--      </el-icon>-->
-    <!--      <span>长远少年</span>-->
-    <!--    </el-menu-item>-->
+        <el-menu-item index="/ArticleLibrary">
+          <el-icon>
+            <Sugar/>
+          </el-icon>
+          <span>文章模块</span>
+        </el-menu-item>
 
     <!--    <el-menu-item>-->
     <!--      <el-icon>-->
@@ -69,12 +69,12 @@
     <!--    </el-menu-item>-->
 
     <!--    @click="Update"-->
-    <el-menu-item index="/main-update">
-      <el-icon>
-        <UploadFilled/>
-      </el-icon>
-      <span>上传素材</span>
-    </el-menu-item>
+<!--    <el-menu-item index="/main-update">-->
+<!--      <el-icon>-->
+<!--        <UploadFilled/>-->
+<!--      </el-icon>-->
+<!--      <span>上传素材</span>-->
+<!--    </el-menu-item>-->
   </el-menu>
 
 </template>

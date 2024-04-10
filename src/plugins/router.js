@@ -13,12 +13,17 @@ import IndexDataNumber from "@/pages/index/IndexDataNumber.vue"
 //产品模块
 import ProductControl from "@/pages/product/ProductControl.vue"
 
+//文章列表
+import ArticleLibrary from "@/pages/article/ArticleLibrary.vue"
+
 const routes = [{
     path: "/main-update", name: "MainUpdate", component: MainUpdate,
 }, {
     path: "/IndexDataNumber", name: "IndexDataNumber", component: IndexDataNumber,
 }, {
     path: "/ProductControl", name: "ProductControl", component: ProductControl,
+}, {
+    path: "/ArticleLibrary", name: "ArticleLibrary", component: ArticleLibrary,
 }
 
 ]
