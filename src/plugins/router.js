@@ -15,6 +15,8 @@ import ProductControl from "@/pages/product/ProductControl.vue"
 
 //文章列表
 import ArticleLibrary from "@/pages/article/ArticleLibrary.vue"
+//成员列表
+import TeamMember from "@/pages/TeamMember/TeamMember.vue"
 
 const routes = [{
     path: "/main-update", name: "MainUpdate", component: MainUpdate,
@@ -24,6 +26,8 @@ const routes = [{
     path: "/ProductControl", name: "ProductControl", component: ProductControl,
 }, {
     path: "/ArticleLibrary", name: "ArticleLibrary", component: ArticleLibrary,
+}, {
+    path: "/TeamMember", name: "TeamMember", component: TeamMember,
 }
 
 ]

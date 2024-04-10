@@ -1,7 +1,7 @@
 <template>
   <div class="ProductControl">
     <div style="display: flex;align-items: center; justify-content: space-between;">
-      <div class="headline"><p style="background-color: #84c1ff"></p> 产品模块</div>
+      <div class="headline"><p style="background-color: #84c1ff"></p> 成员模块</div>
       <div>
         <el-button style="float: right" type="primary" plain @click="confirm">确认
         </el-button>
@@ -63,13 +63,13 @@
     <!-- 表格-->
     <div>
       <el-table border :data="elTableDate" style="width: 100%;height: 238px" show-overflow-tooltip>
-        <el-table-column prop="productId" label="ID"/>
-        <el-table-column prop="productName" label="名称"/>
-        <el-table-column prop="productLogoUrl" label="主图地址"/>
-        <el-table-column prop="productIntroduce" label="介绍"/>
-        <el-table-column prop="honorImgUrlList" label="荣誉图地址集合"/>
-        <el-table-column prop="platformImgUrlList" label="平台二维码截图"/>
-        <el-table-column prop="videoUrl" label="视频地址"/>
+        <el-table-column prop="memberId" label="ID"/>
+        <el-table-column prop="memberName" label="名称"/>
+        <el-table-column prop="memberSex" label="性别"/>
+        <el-table-column prop="positionName" label="岗位名称"/>
+        <el-table-column prop="memberIntroduce" label="岗位介绍"/>
+        <el-table-column prop="email" label="邮箱"/>
+        <el-table-column prop="age" label="年龄"/>
         <el-table-column prop="screenshotImgUrlList" label="作品截图地址集合"/>
         <el-table-column label="编辑" fixed="right" width="100">
           <template #default="scope">
@@ -100,14 +100,17 @@ import {ElMessage} from 'element-plus'
 
 // 存放网络获取的数据
 const tableData = ref([{
-  "productId": 9999,
-  "productName": "实习宝(测试)",
-  "productIntroduce": "“实习宝”是一款专业的企业实践管理系统 ，借助5G时代和高速发展的软件技术，为学生和指导老师提供了统一便捷的协作平台。/n本项目对职业教育中学生的实习期进行了全 流程化管理，以方便高效为目标，以解决实际问题为己任，以数字化发展为契机开启职 业教育数字赋能之路。/n本项目深入实习一线调研，功能直击实习痛 点，可大幅度提升技工院校实习管理团队的工作效率，辅助未来决策，具有极高的推广 应用价值。",
-  "honorImgUrlList": ["img/b实习宝奖状1.png", "img/b实习宝奖状2.png", "img/b实习宝奖状3.png"],
-  "platformImgUrlList": ["/img/b创造实习宝教师端.png", "/img/b创造实习宝学生端.png"],
-  "productLogoUrl": "/img/b创造long1.png",
-  "videoUrl": "/img/实习宝宣讲视频（40S）.mp4",
-  "screenshotImgUrlList": [""]
+  "memberId": 9999,
+  "memberName": "林(测试)",
+  "memberSex": "男",
+  "positionName": "后端工程师",
+  "phoneNum": "19800000000",
+  "entryDate": "2023-01-01 00:00:00",
+  "dimissionDate": "2023-07-24 00:00:00",
+  "memberIntroduce": "我是一个后端工程师",
+  "age": "19",
+  "email": "111@qq.com",
+  "roleName": "成员"
 }])
 //总数据量
 const total = ref(5)
@@ -116,14 +119,14 @@ const currentPage = ref(1)
 //请求 查询岗位列表
 const GetList = (pageNum, pageSize) => {
   // 网络请求数据
-  axios.get("/changyuan/admin/query/product/list", {
+  axios.get("/changyuan/admin/teammember/list", {
     params: {
       pageNum: pageNum,
       pageSize: pageSize
     }
   }).then((response) => {
     tableData.value = response.data.list
-    // console.log("查询产品信息", response.data)
+    console.log("查询产品信息", response.data)
     //总数据量
     total.value = response.data.total
     currentPage.value = pageNum

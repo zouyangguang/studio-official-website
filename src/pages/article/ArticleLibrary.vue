@@ -27,10 +27,10 @@
           <el-input :disabled="formDataDisabled.articleTitle" placeholder="标题"
                     v-model="formData.articleTitle"/>
         </div>
-        <div>
-          <span>类别</span>
-          <el-input :disabled="formDataDisabled.categoryId" placeholder="类别id" v-model="formData.categoryId"/>
-        </div>
+<!--        <div>-->
+<!--          <span>类别</span>-->
+<!--          <el-input :disabled="formDataDisabled.categoryId" placeholder="类别id" v-model="formData.categoryId"/>-->
+<!--        </div>-->
         <div>
           <span>作者</span>
           <el-input :disabled="formDataDisabled.author" placeholder="作者"
@@ -120,7 +120,7 @@ import {ElMessage} from 'element-plus'
 
 // 存放网络获取的数据
 const tableData = ref([{
-  "articleId": 1,
+  "articleId": 9999,
   "categoryId": 0,
   "articleTitle": "A+闯关挑战(测试)",
   "articleContent": "陈肖均同学叙述他在长远遇见的无限可能，用独特的视角展示创新与坚持的力量\r\n\r\n",

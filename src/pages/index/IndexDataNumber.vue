@@ -1,7 +1,7 @@
 <template>
   <div class="IndexData">
     <div style="display: flex;align-items: center; justify-content: space-between;">
-      <div class="headline"><p style="background-color: #e884ff"></p> 岗位信息</div>
+      <div class="headline"><p style="background-color: #e884ff"></p> 岗位模块</div>
       <div>
         <el-button style="float: right" type="primary" plain @click="confirm">确认</el-button>
       </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="AppHeader">
 
-    <h1 style="width: 160px;text-align: center">AppHeader</h1>
+    <h1 style="width: 160px;text-align: center">长远工作室</h1>
 
     <div class="AppHeader-right">
       <!-- 切换主题-->

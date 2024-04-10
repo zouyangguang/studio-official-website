@@ -4,30 +4,14 @@
       :default-active="$route.path"
       class="el-menu-vertical-demo MenuSidebar"
   >
-    <!--    <el-menu-item>-->
-    <!--      <el-icon>-->
-    <!--        <HomeFilled/>-->
-    <!--      </el-icon>-->
-    <!--      <span>数据分析</span>-->
-    <!--    </el-menu-item>-->
 
     <el-menu-item index="/IndexDataNumber">
       <el-icon>
         <Menu/>
       </el-icon>
-      <span>岗位列表</span>
+      <span>岗位模块</span>
     </el-menu-item>
 
-<!--    <el-sub-menu>-->
-<!--      <template #title>-->
-<!--        <el-icon>-->
-<!--          <Menu/>-->
-<!--        </el-icon>-->
-<!--        <span>首页管理</span>-->
-<!--      </template>-->
-<!--      <el-menu-item index="/IndexDataNumber">岗位信息</el-menu-item>-->
-<!--      <el-menu-item index="/SeIndexDataNumber">设置岗位信息</el-menu-item>-->
-<!--    </el-sub-menu>-->
 
     <el-menu-item index="/ProductControl">
       <el-icon>
@@ -36,30 +20,49 @@
       <span>产品模块</span>
     </el-menu-item>
 
-<!--    <el-sub-menu>-->
-<!--      <template #title>-->
-<!--        <el-icon>-->
-<!--          <Watermelon/>-->
-<!--        </el-icon>-->
-<!--        <span>长远创造</span>-->
-<!--      </template>-->
-<!--      <el-menu-item index="/LongTermCreationProductsList">产品信息</el-menu-item>-->
-<!--      <el-menu-item>页面2</el-menu-item>-->
-<!--    </el-sub-menu>-->
 
-        <el-menu-item index="/ArticleLibrary">
-          <el-icon>
-            <Sugar/>
-          </el-icon>
-          <span>文章模块</span>
-        </el-menu-item>
+    <el-menu-item index="/ArticleLibrary">
+      <el-icon>
+        <Sugar/>
+      </el-icon>
+      <span>文章模块</span>
+    </el-menu-item>
+
+    <el-menu-item index="/TeamMember">
+      <el-icon>
+        <Apple/>
+      </el-icon>
+      <span>成员模块</span>
+    </el-menu-item>
 
     <!--    <el-menu-item>-->
     <!--      <el-icon>-->
-    <!--        <Apple/>-->
+    <!--        <HomeFilled/>-->
     <!--      </el-icon>-->
-    <!--      <span>长远导师</span>-->
+    <!--      <span>数据分析</span>-->
     <!--    </el-menu-item>-->
+
+    <!--    <el-sub-menu>-->
+    <!--      <template #title>-->
+    <!--        <el-icon>-->
+    <!--          <Menu/>-->
+    <!--        </el-icon>-->
+    <!--        <span>首页管理</span>-->
+    <!--      </template>-->
+    <!--      <el-menu-item index="/IndexDataNumber">岗位信息</el-menu-item>-->
+    <!--      <el-menu-item index="/SeIndexDataNumber">设置岗位信息</el-menu-item>-->
+    <!--    </el-sub-menu>-->
+
+    <!--    <el-sub-menu>-->
+    <!--      <template #title>-->
+    <!--        <el-icon>-->
+    <!--          <Watermelon/>-->
+    <!--        </el-icon>-->
+    <!--        <span>长远创造</span>-->
+    <!--      </template>-->
+    <!--      <el-menu-item index="/LongTermCreationProductsList">产品信息</el-menu-item>-->
+    <!--      <el-menu-item>页面2</el-menu-item>-->
+    <!--    </el-sub-menu>-->
 
     <!--    <el-menu-item>-->
     <!--      <el-icon>-->
@@ -69,12 +72,12 @@
     <!--    </el-menu-item>-->
 
     <!--    @click="Update"-->
-<!--    <el-menu-item index="/main-update">-->
-<!--      <el-icon>-->
-<!--        <UploadFilled/>-->
-<!--      </el-icon>-->
-<!--      <span>上传素材</span>-->
-<!--    </el-menu-item>-->
+    <!--    <el-menu-item index="/main-update">-->
+    <!--      <el-icon>-->
+    <!--        <UploadFilled/>-->
+    <!--      </el-icon>-->
+    <!--      <span>上传素材</span>-->
+    <!--    </el-menu-item>-->
   </el-menu>
 
 </template>
