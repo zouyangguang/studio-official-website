@@ -4,8 +4,8 @@
       <div class="container b-container">
         <form action="" method="" class="form">
           <h2 class="form_title title">登入账号</h2>
-          <input type="text" class="form_input" v-model="data.userName" placeholder="Email">
-          <input type="password" class="form_input" v-model="data.psd" placeholder="Password">
+          <input type="text" class="form_input" v-model="data.memberName" placeholder="成员姓名">
+          <input type="password" class="form_input" v-model="data.password" placeholder="密码">
           <button class="form_button button submit" @click="login">SIGN IN</button>
         </form>
       </div>
@@ -30,8 +30,8 @@ import {ref} from "vue";
 import axios from "axios";
 
 const data = ref({
-  userName: "",
-  psd: ""
+  memberName: "林",
+  password: "123456"
 })
 //用户登录
 const login = async () => {
@@ -46,11 +46,11 @@ const login = async () => {
         message: '登录成功',
         type: 'success',
       })
-      console.log(res)
+      localStorage.setItem("login",JSON.stringify(res.data.data))
       router.push("/")
     }).catch((err) => {
       ElMessage({
-        message: '登录成功失败',
+        message: '登录失败',
         type: 'warning',
       })
       console.log("登录成功失败", err)

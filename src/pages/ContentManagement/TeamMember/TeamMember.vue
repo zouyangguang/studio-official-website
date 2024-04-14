@@ -33,13 +33,19 @@
         </div>
         <div>
           <span>岗位名称</span>
-          <el-input :disabled="formDataDisabled.positionName" placeholder="岗位名称"
-                    v-model="formData.positionName"/>
+          <el-select :disabled="formDataDisabled.positionId" v-model="positionId" placeholder="请选择操作类型"
+                     size="default" style="width: 100%;">
+            <el-option v-for="item in positionDtoList" :key="item.positionId" :label="item.positionName"
+                       :value="item.positionId"/>
+          </el-select>
+
         </div>
         <div>
-          <span>角色名称</span>
-          <el-input :disabled="formDataDisabled.roleName" placeholder="角色名称"
-                    v-model="formData.roleName"/>
+          <span>角色名称{{ roleId }}</span>
+          <el-select :disabled="formDataDisabled.roleId" v-model="roleId" placeholder="请选择操作类型" size="default"
+                     style="width: 100%;">
+            <el-option v-for="item in RoleDtoList" :key="item.positionId" :label="item.roleName" :value="item.roleId"/>
+          </el-select>
         </div>
         <div>
           <span>邮箱</span>
@@ -80,6 +86,11 @@
                     v-model="formData.memberIntroduce" style="width: 90%"
                     autosize
                     type="textarea"/>
+        </div>
+        <div>
+          <span>密码</span>
+          <el-input :disabled="formDataDisabled.password" placeholder="请输入密码"
+                    v-model="formData.password"/>
         </div>
       </form>
     </div>
@@ -142,7 +153,7 @@ const tableData = ref([{
 const total = ref(5)
 //页面
 const currentPage = ref(1)
-//请求 查询岗位列表
+//请求 查询成员信息列表
 const GetList = (pageNum, pageSize) => {
   // 网络请求数据
   axios.get("/changyuan/admin/teammember/list", {
@@ -165,6 +176,39 @@ const GetList = (pageNum, pageSize) => {
 }
 GetList(1, 5)
 
+//存放岗位列表
+const positionDtoList = ref([{
+  "positionId": 999,
+  "positionName": ""
+}])
+//存放当前选择的岗位
+const positionId = ref(positionDtoList.value[0].positionId)
+//查询岗位列表
+axios.get("/changyuan/admin/positionDto/list",).then((response) => {
+  positionDtoList.value = response.data
+  positionId.value = positionDtoList.value[0].positionId
+}).catch((err) => {
+  console.log("查询全部岗位错误", err)
+  ElMessage.error(err.message)
+})
+
+//存放全部角色列表
+const RoleDtoList = ref([{
+  "roleName": "user",
+  "roleId": 999
+}])
+//存放选中的角色列表
+const roleId = ref(RoleDtoList.value[0].roleId)
+//查询全部角色
+axios.get("/changyuan/admin/RoleDto/list",).then((response) => {
+  RoleDtoList.value = response.data
+  roleId.value = RoleDtoList.value[0].roleId
+}).catch((err) => {
+  console.log("查询角色错误", err)
+  ElMessage.error(err.message)
+})
+
+
 // 展示数据
 const elTableDate = ref([])
 //更换分页
@@ -178,28 +222,30 @@ const formData = ref({
   "memberId": "",
   "memberName": "",
   "memberSex": "",
-  "positionName": "",
+  "positionId": positionId.value,
   "phoneNum": "",
   "entryDate": "",
   "dimissionDate": "",
   "memberIntroduce": "",
   "age": "",
   "email": "",
-  "roleName": ""
+  "roleId": roleId.value,
+  "password": ""
 })
 //控制输入框是否禁用
 const formDataDisabled = ref({
-  "memberId": false,
+  "memberId": true,
   "memberName": false,
   "memberSex": true,
-  "positionName": true,
+  "positionId": true,
   "phoneNum": true,
   "entryDate": true,
   "dimissionDate": true,
   "memberIntroduce": true,
   "age": true,
   "email": true,
-  "roleName": true
+  "roleId": true,
+  "password": true
 })
 
 // 存放操作的类型
@@ -227,42 +273,45 @@ const typeChange = () => {
     "memberId": "",
     "memberName": "",
     "memberSex": "",
-    "positionName": "",
+    "positionId": positionId.value,
     "phoneNum": "",
     "entryDate": "",
     "dimissionDate": "",
     "memberIntroduce": "",
     "age": "",
     "email": "",
-    "roleName": ""
+    "roleId": roleId.value,
+    "password": ""
   }
   if (operation.value === "搜索") {
     formDataDisabled.value = {
-      "memberId": false,
+      "memberId": true,
       "memberName": false,
       "memberSex": true,
-      "positionName": true,
+      "positionId": true,
       "phoneNum": true,
       "entryDate": true,
       "dimissionDate": true,
       "memberIntroduce": true,
       "age": true,
       "email": true,
-      "roleName": true
+      "roleId": true,
+      "password": true
     }
   } else {
     formDataDisabled.value = {
       "memberId": true,
       "memberName": false,
       "memberSex": false,
-      "positionName": false,
+      "positionId": false,
       "phoneNum": false,
       "entryDate": false,
       "dimissionDate": false,
       "memberIntroduce": false,
       "age": false,
       "email": false,
-      "roleName": false
+      "roleId": false,
+      "password": false
     }
   }
 }
@@ -275,7 +324,26 @@ const confirm = () => {
   } else if (operation.value === "新建") {
     addData()
   }
-
+}
+// 判断输入框 是否为空
+const IsEmpty = () => {
+  const temp = ref(true)
+  for (let key in formData.value) {
+    if (key !== 'memberId' && key !== 'dimissionDate') {
+      if (formData.value[key] === undefined || formData.value[key] === null) {
+        formData.value[key] = ""
+      }
+      if (formData.value[key].toString().replace(/(^\s*)|(\s*$)/g, '') === "") {
+        temp.value = false
+        ElMessage({
+          message: '输入框不能为空!' + key,
+          type: 'warning',
+        })
+        break
+      }
+    }
+  }
+  return temp.value
 }
 //搜索
 const seek = async () => {
@@ -286,7 +354,7 @@ const seek = async () => {
   //存放那个请求 请求成功
   const succeed = ref([false, false])
   // //岗位id 不为空 请求 搜索
-  // if (formData.value.productId !== "") {
+  // if (formData.value.memberId !== "") {
   //   await axios.get("/changyuan/admin/query/productsById/" + formData.value.memberId).then((response) => {
   //     elTableDate.value.unshift(response.data)
   //     succeed.value[0] = true
@@ -321,25 +389,31 @@ const GetSetData = (scope) => {
   //更改操作类型
   operation.value = options[2].value
   typeChange()
+  positionId.value = positionDtoList.value.find((item) => item.positionName === scope.row.positionName).positionId
+  roleId.value = RoleDtoList.value.find((item) => item.roleName === scope.row.roleName).roleId
+  console.log(roleId.value)
   formData.value = {
     "memberId": scope.row.memberId,
     "memberName": scope.row.memberName,
     "memberSex": scope.row.memberSex,
-    "positionName": scope.row.positionName,
+    "positionId": positionId.value,
     "phoneNum": scope.row.phoneNum,
     "entryDate": scope.row.entryDate,
     "dimissionDate": scope.row.dimissionDate,
     "memberIntroduce": scope.row.memberIntroduce,
     "age": scope.row.age,
     "email": scope.row.email,
-    "roleName": scope.row.roleName
+    "roleId": roleId.value,
+    "password": ""
   }
-  console.log("修改", scope)
+  // console.log("修改", scope)
 }
 
 //修改
 const setData = async () => {
   if (IsEmpty()) {
+    formData.value.positionId = positionId.value
+    formData.value.roleId = roleId.value
     await axios.put("/changyuan/admin/teammember/update", formData.value).then(() => {
       ElMessage({
         message: '修改成员信息成功',
@@ -375,23 +449,6 @@ const addData = async () => {
       console.log("新增成员错误", err)
     })
   }
-}
-// 判断输入框 是否为空
-const IsEmpty = () => {
-  const temp = ref(true)
-  for (let key in formData.value) {
-    if (key !== 'memberId') {
-      if (formData.value[key].toString().replace(/(^\s*)|(\s*$)/g, '') === "") {
-        temp.value = false
-        ElMessage({
-          message: '输入框不能为空!' + key,
-          type: 'warning',
-        })
-        break
-      }
-    }
-  }
-  return temp.value
 }
 
 //删除

@@ -5,15 +5,23 @@
 
     <div class="AppHeader-right">
       <!-- 切换主题-->
+
       <el-switch
           v-model="switchBtn"
           :active-action-icon="Sunny"
           :inactive-action-icon="Moon"
           :before-change="switchTopic"
-          style="--el-switch-on-color: #84c1ff;"
-      />
+          style="--el-switch-on-color: #84c1ff;"/>
       <!-- 用户登录-->
-      <el-avatar style="cursor: pointer" :icon="UserFilled" @click="login"></el-avatar>
+      <el-tooltip content="退出登录">
+          <span @click="login">
+            <el-icon size="25" style="cursor: pointer">
+            <SwitchButton/>
+          </el-icon>
+          </span>
+      </el-tooltip>
+
+      <!--      <el-avatar style="cursor: pointer" :icon="SwitchButton" @click="login"></el-avatar>-->
     </div>
 
 
@@ -21,9 +29,11 @@
 </template>
 
 <script setup>
-import {Sunny, Moon, UserFilled} from '@element-plus/icons-vue'
+import {Sunny, Moon, SwitchButton} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {ref} from "vue";
+import axios from "axios";
+import router from "@/plugins/router";
 
 /*切换主题*/
 const switchBtn = ref(false)
@@ -37,11 +47,16 @@ const switchTopic = () => {
 }
 
 const login = () => {
+  // axios.put("/changyuan/user/logout").catch((err) => {
+  //   console.log("修改成员信息错误", err)
+  // })
+  //清除缓存
+  localStorage.removeItem("login")
   ElMessage({
-    message: '还未登录',
-    type: 'warning',
+    message: '退出登录成功',
+    type: 'success',
   })
-
+  router.push("/UserLogin")
 }
 
 </script>
