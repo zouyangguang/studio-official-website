@@ -30,17 +30,13 @@ import {ref} from "vue";
 import axios from "axios";
 
 const data = ref({
-  memberName: "林",
-  password: "123456"
+  memberName: "",
+  password: ""
 })
 //用户登录
 const login = async () => {
   if (IsEmpty(data.value)) {
-    // ElMessage({
-    //   message: '登录成功',
-    //   type: 'success',
-    // })
-    // router.push("/")
+
     await axios.post("/changyuan/user/login", data.value).then((res) => {
       ElMessage({
         message: '登录成功',

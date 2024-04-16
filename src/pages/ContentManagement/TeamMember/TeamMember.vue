@@ -28,8 +28,12 @@
         </div>
         <div>
           <span>性别</span>
-          <el-input :disabled="formDataDisabled.memberSex" placeholder="性别"
-                    v-model="formData.memberSex"/>
+<!--          <el-input :disabled="formDataDisabled.memberSex" placeholder="性别"-->
+<!--                    v-model="formData.memberSex"/>-->
+          <el-radio-group v-model="formData.memberSex" :disabled="formDataDisabled.memberSex">
+            <el-radio value="男" label="男" size="large">男</el-radio>
+            <el-radio value="女" label="女" size="large">女</el-radio>
+          </el-radio-group>
         </div>
         <div>
           <span>岗位名称</span>
@@ -54,8 +58,9 @@
         </div>
         <div>
           <span>年龄</span>
-          <el-input :disabled="formDataDisabled.age" placeholder="年龄"
-                    v-model="formData.age"/>
+<!--          <el-input :disabled="formDataDisabled.age" placeholder="年龄"-->
+<!--                    v-model="formData.age"/>-->
+          <el-input-number style="width: 100%;"  v-model="formData.age" :disabled="formDataDisabled.age"  :min="1" :max="100"></el-input-number>
         </div>
         <div>
           <span>电话号码</span>
@@ -134,7 +139,6 @@
 import {ref} from "vue";
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
-
 // 存放网络获取的数据
 const tableData = ref([{
   "memberId": 999,
@@ -221,13 +225,13 @@ const currentChange = (n) => {
 const formData = ref({
   "memberId": "",
   "memberName": "",
-  "memberSex": "",
+  "memberSex": "男",
   "positionId": positionId.value,
   "phoneNum": "",
-  "entryDate": "",
+  "entryDate":  new Date(),
   "dimissionDate": "",
-  "memberIntroduce": "",
-  "age": "",
+  "memberIntroduce":"",
+  "age": 18,
   "email": "",
   "roleId": roleId.value,
   "password": ""
@@ -272,13 +276,13 @@ const typeChange = () => {
   formData.value = {
     "memberId": "",
     "memberName": "",
-    "memberSex": "",
+    "memberSex": "男",
     "positionId": positionId.value,
     "phoneNum": "",
-    "entryDate": "",
+    "entryDate": new Date(),
     "dimissionDate": "",
     "memberIntroduce": "",
-    "age": "",
+    "age": 18,
     "email": "",
     "roleId": roleId.value,
     "password": ""

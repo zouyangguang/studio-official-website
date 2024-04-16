@@ -55,9 +55,10 @@ router.beforeEach((to, from, next) => {
         //需要身份验证检查
         //从缓存获取login
         const login = JSON.parse(localStorage.getItem("login"))
+        console.log(login)
         if (login === null) {
             //login为空则没有登录
-            ElMessage({message: '请重新登录', type: 'warning',})
+            ElMessage({message: '请登录', type: 'warning',})
             //跳转到登录页
             next("/UserLogin")
         } else {
@@ -69,7 +70,7 @@ router.beforeEach((to, from, next) => {
                 next()
             }).catch((err) => {
                 //验证不通过
-                ElMessage({message: err.response.data.error + '请重新登录', type: 'warning',})
+                ElMessage({message: err.response.data.error + '请登录', type: 'warning',})
                 console.log(err.response)
                 //移除请求的headers
                 axios.defaults.headers.common.Authorization = null
