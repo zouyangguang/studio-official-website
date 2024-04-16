@@ -55,7 +55,6 @@ router.beforeEach((to, from, next) => {
         //需要身份验证检查
         //从缓存获取login
         const login = JSON.parse(localStorage.getItem("login"))
-        console.log(login)
         if (login === null) {
             //login为空则没有登录
             ElMessage({message: '请登录', type: 'warning',})
@@ -66,9 +65,7 @@ router.beforeEach((to, from, next) => {
             //设置私有请求的headers
             axios.defaults.headers.common.Authorization = "Bearer " + login.token
             //查询数据判断是否成功
-            axios.get("/changyuan/admin/query/position/list").then(() => {
-                next()
-            }).catch((err) => {
+            axios.get("/changyuan/admin/query/position/list").catch((err) => {
                 //验证不通过
                 ElMessage({message: err.response.data.error + '请登录', type: 'warning',})
                 console.log(err.response)
@@ -77,6 +74,11 @@ router.beforeEach((to, from, next) => {
                 ////跳转到登录页
                 next("/UserLogin")
             })
+            if (to.path === "/TeamMember" && login.roleName !== 'admin') {
+                ElMessage({message: '抱歉，您无权限查看', type: 'warning',})
+                next("IndexDataNumber")
+            }
+            next()
         }
     } else {
         //正常跳转

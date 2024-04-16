@@ -28,11 +28,14 @@ import {ElMessage} from "element-plus";
 import router from "@/plugins/router";
 import {ref} from "vue";
 import axios from "axios";
+import {inject} from "vue";
+const globalState = inject("globalState")
 
 const data = ref({
   memberName: "",
   password: ""
 })
+
 //用户登录
 const login = async () => {
   if (IsEmpty(data.value)) {
@@ -42,7 +45,8 @@ const login = async () => {
         message: '登录成功',
         type: 'success',
       })
-      localStorage.setItem("login",JSON.stringify(res.data.data))
+      localStorage.setItem("login", JSON.stringify(res.data.data))
+      globalState.value.login = JSON.parse(localStorage.getItem("login"))
       router.push("/")
     }).catch((err) => {
       ElMessage({
