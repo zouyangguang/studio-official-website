@@ -13,6 +13,7 @@ axios.defaults.baseURL="http://43.139.254.175:8080"
 //公共属性
 const globalState = ref({
     login:JSON.parse(localStorage.getItem("login")),
+    memberName:localStorage.getItem("memberName"),
     IPAddress: "http://43.139.254.175:8080"//访问接口地址
 })
 const app = createApp(App)

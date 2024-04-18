@@ -5,16 +5,18 @@
 
     <div class="AppHeader-right">
       <!-- 切换主题-->
-
       <el-switch
           v-model="switchBtn"
           :active-action-icon="Sunny"
           :inactive-action-icon="Moon"
           :before-change="switchTopic"
           style="--el-switch-on-color: #84c1ff;"/>
+      <div>
+        当前用户 {{ globalState.memberName }}
+      </div>
       <!-- 用户登录-->
       <el-tooltip content="退出登录">
-          <span @click="login">
+          <span @click="login" style="height: 50px;display: flex; align-items: center">
             <el-icon size="25" style="cursor: pointer">
             <SwitchButton/>
           </el-icon>
@@ -31,10 +33,11 @@
 <script setup>
 import {Sunny, Moon, SwitchButton} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
-import {ref} from "vue";
-import axios from "axios";
+import {inject, ref} from "vue";
 import router from "@/plugins/router";
 
+const globalState = inject("globalState")
+console.log(globalState.memberName)
 /*切换主题*/
 const switchBtn = ref(false)
 const switchTopic = () => {
@@ -47,9 +50,6 @@ const switchTopic = () => {
 }
 
 const login = () => {
-  // axios.put("/changyuan/user/logout").catch((err) => {
-  //   console.log("修改成员信息错误", err)
-  // })
   //清除缓存
   localStorage.removeItem("login")
   ElMessage({
@@ -79,7 +79,7 @@ const login = () => {
 }
 
 .AppHeader-right {
-  width: 150px;
+  width: 300px;
   display: flex;
   justify-content: space-around;
   align-items: center;

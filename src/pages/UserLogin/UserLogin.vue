@@ -45,7 +45,9 @@ const login = async () => {
         type: 'success',
       })
       localStorage.setItem("login", JSON.stringify(res.data.data))
+      localStorage.setItem("memberName", data.value.memberName)
       globalState.value.login = JSON.parse(localStorage.getItem("login"))
+      globalState.value.memberName = localStorage.getItem("memberName")
       router.push("/")
     }).catch((err) => {
       ElMessage({
