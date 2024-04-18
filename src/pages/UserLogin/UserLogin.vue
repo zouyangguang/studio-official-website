@@ -2,7 +2,7 @@
   <div class="UserLogin">
     <div class="shell">
       <div class="container b-container">
-        <form action="" method="" class="form">
+        <form class="form">
           <h2 class="form_title title">登入账号</h2>
           <input type="text" class="form_input" v-model="data.memberName" placeholder="成员姓名">
           <input type="password" class="form_input" v-model="data.password" placeholder="密码">
@@ -29,17 +29,16 @@ import router from "@/plugins/router";
 import {ref} from "vue";
 import axios from "axios";
 import {inject} from "vue";
+
 const globalState = inject("globalState")
 
 const data = ref({
   memberName: "",
   password: ""
 })
-
 //用户登录
 const login = async () => {
   if (IsEmpty(data.value)) {
-
     await axios.post("/changyuan/user/login", data.value).then((res) => {
       ElMessage({
         message: '登录成功',
@@ -55,7 +54,6 @@ const login = async () => {
       })
       console.log("登录成功失败", err)
     })
-
   }
 }
 

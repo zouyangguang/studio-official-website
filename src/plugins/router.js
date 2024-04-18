@@ -22,6 +22,9 @@ import ProductControl from "@/pages/ContentManagement/product/ProductControl.vue
 import ArticleLibrary from "@/pages/ContentManagement/article/ArticleLibrary.vue"
 //成员列表
 import TeamMember from "@/pages/ContentManagement/TeamMember/TeamMember.vue"
+
+//系统日志
+import ChangyuanLog from "@/pages/ContentManagement/ChangyuanLog/ChangyuanLog.vue"
 import {ElMessage} from "element-plus";
 import axios from "axios";
 
@@ -32,13 +35,15 @@ const routes = [{
     path: "/",
     name: "ContentManagement",
     component: ContentManagement,
-    redirect: "/IndexDataNumber",
+    redirect: "/ChangyuanLog",
     meta: {requiresAuth: true},
-    children: [{path: "IndexDataNumber", name: "IndexDataNumber", component: IndexDataNumber}, {
-        path: "ProductControl", name: "ProductControl", component: ProductControl
-    }, {path: "ArticleLibrary", name: "ArticleLibrary", component: ArticleLibrary}, {
-        path: "TeamMember", name: "TeamMember", component: TeamMember
-    }]
+    children: [
+        {path: "IndexDataNumber", name: "IndexDataNumber", component: IndexDataNumber},
+        {path: "ProductControl", name: "ProductControl", component: ProductControl},
+        {path: "ArticleLibrary", name: "ArticleLibrary", component: ArticleLibrary},
+        {path: "TeamMember", name: "TeamMember", component: TeamMember},
+        {path: "ChangyuanLog", name: "ChangyuanLog", component: ChangyuanLog},
+    ]
 }]
 
 
@@ -73,12 +78,16 @@ router.beforeEach((to, from, next) => {
                 axios.defaults.headers.common.Authorization = null
                 ////跳转到登录页
                 next("/UserLogin")
+            }).then(() => {
+                //判断是否为管理员 是否进入用户管理页
+                if (to.path === "/TeamMember" && login.roleName !== 'admin') {
+                    ElMessage({message: '抱歉，您无权限查看', type: 'warning',})
+                    next("IndexDataNumber")
+                } else {
+                    next()
+                }
             })
-            if (to.path === "/TeamMember" && login.roleName !== 'admin') {
-                ElMessage({message: '抱歉，您无权限查看', type: 'warning',})
-                next("IndexDataNumber")
-            }
-            next()
+
         }
     } else {
         //正常跳转

@@ -4,6 +4,12 @@
       :default-active="$route.path"
       class="el-menu-vertical-demo MenuSidebar"
   >
+    <el-menu-item index="/ChangyuanLog">
+      <el-icon>
+        <Notebook/>
+      </el-icon>
+      <span>系统日志</span>
+    </el-menu-item>
 
     <el-menu-item index="/IndexDataNumber">
       <el-icon>
@@ -41,6 +47,7 @@
 
 <script setup>
 import {
+  Notebook,
   Menu,
   Watermelon,
   Sugar,
