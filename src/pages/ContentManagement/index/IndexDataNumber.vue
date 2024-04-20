@@ -35,7 +35,8 @@
         </div>
         <div>
           <span>主图路径</span>
-          <el-input :disabled="formDataDisabled.positionImgUrl" placeholder="岗位主图路径"
+          <el-input @click="dialogTableVisible=true" :disabled="formDataDisabled.positionImgUrl"
+                    placeholder="岗位主图路径"
                     v-model="formData.positionImgUrl"/>
         </div>
         <div>
@@ -73,6 +74,58 @@
           :current-page="currentPage"
           style="margin-top:10px;justify-content:center"/>
     </div>
+
+    <el-dialog v-model="dialogTableVisible" title="请选择已有素材" width="800">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="已有素材" name="已有素材" style="height: 450px;">
+          <el-scrollbar height="400px">
+            <ul class="MediaList">
+              <li v-for="item in MediaList" :key="item.mediaId">
+                <!--                :src="'http://43.139.254.175/'+item.filePath"-->
+                <el-image style="width:95%;height: 70%" :src="'http://43.139.254.175/'+item.filePath" fit="contain">
+                  <template #error>
+                    <div class="image-slot">
+                      <el-icon>
+                        <Picture/>
+                      </el-icon>
+                    </div>
+                  </template>
+                </el-image>
+                {{ item.filePath }}
+              </li>
+            </ul>
+          </el-scrollbar>
+          <el-button plain type="success" class="upload-button">确定</el-button>
+        </el-tab-pane>
+        <el-tab-pane label="上传" name="上传" style="height: 450px; border: 1px solid rgba(255,255,255,0)">
+          <div class="show-img">
+            <ul>
+              <li v-for="imgSrc in imgUrl" :key="imgSrc">
+                <el-image
+                    style="width: 129px; height: 129px;border-radius: 5px;"
+                    :src="imgSrc"
+                    :zoom-rate="1.2"
+                    :max-scale="7"
+                    :min-scale="0.2"
+                    :preview-src-list="[imgSrc]"
+                    :initial-index="4"
+                    fit="cover"/>
+              </li>
+
+              <li class="show-img-addImg" @click="callAddImg">
+                <el-icon>
+                  <Plus/>
+                </el-icon>
+              </li>
+            </ul>
+            <el-button plain type="success" class="upload-button" @click="imgUpload">上传</el-button>
+            <input v-show="false" multiple="multiple" ref="addImgInput" type="file" name="image" accept="image/*"
+                   @change="addImg">
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -80,6 +133,81 @@
 import {ref} from "vue";
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
+import {Plus, Picture} from '@element-plus/icons-vue'
+//打开对话框 图片
+const dialogTableVisible = ref(true)
+const activeName = ref('已有素材')
+//存放选取的图片
+const imgArray = ref([])
+//图片结果
+const imgUrl = ref([])
+
+//存放 添加图片按钮
+const addImgInput = ref(null)
+
+//调用 选择添加图片 方法
+const callAddImg = () => {
+  addImgInput.value.click()
+}
+//选择添加图片
+const addImg = (e) => {
+  const newImgs = Object.values(e.target.files)
+  newImgs.forEach((img) => {
+    //判断是不是图片类型
+    if (img.type.split("/")[0] == 'image') {
+      //读取文件对象
+      let reader = new FileReader();
+      //读取文件
+      reader.readAsDataURL(img)
+      reader.onload = () => {
+        imgUrl.value.push(reader.result)
+      }
+      imgArray.value.push(img)
+      ElMessage({
+        showClose: true,
+        message: img.name + '选择成功',
+        type: 'success',
+      })
+    } else {
+      ElMessage({
+        showClose: true,
+        message: img.name + '文件类型不是图片类型哦',
+        type: 'warning',
+      })
+    }
+  })
+}
+//图片上传服务器
+const imgUpload = () => {
+  imgArray.value.forEach((file) => {
+    axios({
+      method: 'post',
+      url: '/api/upload',
+      headers: {"Content-Type": "multipart/form-data"},
+      data: {"files": file}
+    }).then(function (response) {
+      console.log(file)
+      console.log(response)
+    })
+  })
+  ElMessage({
+    showClose: true,
+    message: '上传成功',
+    type: 'success',
+  })
+}
+
+const MediaList = ref([])
+
+const GetMediaList = () => {
+  axios.get("/api/query/Media/list").then((res) => {
+    MediaList.value = res.data
+    console.log(MediaList.value)
+  }).catch((err) => {
+    console.log("获取图片失败", err)
+  })
+}
+GetMediaList()
 
 // 存放操作的类型
 const options = [
@@ -101,19 +229,20 @@ const options = [
 //选择的操作类型
 const operation = ref(options[0].value)
 // 网络获取的数据
-const tableData = ref([{
-  "positionId": "999",
-  "positionName": "1",
-  "positionIntroduce": "1",
-  "positionDescriptionList": [1],
-  "positionImgUrl": "1"
-}, {
-  "positionId": "1000",
-  "positionName": "2",
-  "positionIntroduce": "2",
-  "positionDescriptionList": [2],
-  "positionImgUrl": "2"
-}])
+const tableData = ref([
+  {
+    "positionId": "999",
+    "positionName": "1",
+    "positionIntroduce": "1",
+    "positionDescriptionList": [1],
+    "positionImgUrl": "1"
+  }, {
+    "positionId": "1000",
+    "positionName": "2",
+    "positionIntroduce": "2",
+    "positionDescriptionList": [2],
+    "positionImgUrl": "2"
+  }])
 //总数据量
 const total = ref(5)
 //页面
@@ -331,8 +460,76 @@ const deleteData = (scope) => {
   })
 
 }
+
+
 </script>
 
 <style scoped>
+/*图片选项卡*/
+.show-img > ul {
+  list-style: none;
+  display: flex;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  min-height: 325px;
+  max-height: 70dvh;
+  overflow-y: auto;
+  padding: 10px 0px;
+  transition: 0.5s;
+}
 
+
+.show-img > ul > li {
+  width: 140px;
+  height: 140px;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  box-sizing: border-box;
+
+}
+
+.show-img > ul > .show-img-addImg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  transition: 0.5s;
+}
+
+.show-img > ul > .show-img-addImg:hover {
+  --hover-color: #80c5ff;
+  color: var(--hover-color);
+  border: 1px dashed var(--hover-color);
+}
+.upload-button{
+  position: absolute;
+  bottom: 0px;
+}
+.MediaList {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 25%);
+}
+
+.MediaList > li {
+  height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-secondary);
+  font-size: 30px;
+}
 </style>

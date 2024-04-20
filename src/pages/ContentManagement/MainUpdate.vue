@@ -7,7 +7,6 @@
       上传素材
     </h1>
     <el-tabs v-model="activeName" class="demo-tabs MainUpdate-tabs">
-
       <!--文字-->
       <el-tab-pane label="文字" name="txt">
         <el-input
@@ -46,8 +45,7 @@
           </ul>
           <el-button plain type="success" class="upload-button" @click="imgUpload">上传</el-button>
         </div>
-        <input v-show="false" multiple="multiple" ref="addImgInput" type="file" name="image" accept="image/*"
-               @change="addImg">
+        <input v-show="false" multiple="multiple" ref="addImgInput" type="file" name="image" accept="image/*" @change="addImg">
 
       </el-tab-pane>
       <!--图片-->
@@ -60,7 +58,9 @@
           <template #header>
             <div class="card-header">
               <span>上传视频</span>
-              <el-button style="margin-top:0" plain type="success" @click="videoUpload" class="upload-button">上传服务器</el-button>
+              <el-button style="margin-top:0" plain type="success" @click="videoUpload" class="upload-button">
+                上传服务器
+              </el-button>
             </div>
           </template>
 
@@ -73,7 +73,7 @@
                 <input title="" ref="addVideoInput" type="file" @change="addVideo" name="*" accept="video/*">
               </el-tooltip>
             </div>
-            <video v-show="showVide" :src="videoDomSrc"  controls autoplay></video>
+            <video v-show="showVide" :src="videoDomSrc" controls autoplay></video>
           </div>
           <template v-if="showVide" #footer>
             <el-button plain @click="addVideoInput.click()" type="success">重新选择视频</el-button>
@@ -92,10 +92,11 @@
 import {UploadFilled, Plus} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {ref, inject} from "vue";
+import axios from "axios";
 
 
 // 获取全局对象
-const global = inject('global')
+// const global = inject('global')
 //MainUpdate-tabs  当前选项卡
 const activeName = ref('video')
 //存放选取的图片
@@ -141,16 +142,17 @@ const addImg = (e) => {
 
 //图片上传服务器
 const imgUpload = () => {
-  // imgArray.value.forEach((file) => {
-  //   global.axios({
-  //     method: 'post',
-  //     url: 'http://127.0.0.1:5000/upload-img',
-  //     headers: {"Content-Type": "multipart/form-data"},
-  //     data: {"file": file}
-  //   }).then(function (response) {
-  //     console.log(response)
-  //   })
-  // })
+  imgArray.value.forEach((file) => {
+    axios({
+      method: 'post',
+      url: '/api/upload',
+      headers: {"Content-Type": "multipart/form-data"},
+      data: {"files": file}
+    }).then(function (response) {
+      console.log(file)
+      console.log(response)
+    })
+  })
   ElMessage({
     showClose: true,
     message: '上传成功',
@@ -190,7 +192,7 @@ const addVideo = (e) => {
   }
 
 }
-const videoUpload=()=>{
+const videoUpload = () => {
   ElMessage({
     showClose: true,
     message: '视频上传成功',
@@ -311,11 +313,11 @@ const textUpload = () => {
   justify-content: space-between;
   align-items: center;
 }
-.video video{
+
+.video video {
   width: 100%;
   height: 100%;
 }
-
 
 
 </style>

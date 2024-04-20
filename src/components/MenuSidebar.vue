@@ -34,6 +34,13 @@
       <span>文章模块</span>
     </el-menu-item>
 
+<!--    <el-menu-item index="/MainUpdate">-->
+<!--      <el-icon>-->
+<!--        <Sugar/>-->
+<!--      </el-icon>-->
+<!--      <span>上传素材</span>-->
+<!--    </el-menu-item>-->
+
     <el-menu-item index="/TeamMember" v-if="globalState.login.roleName==='admin'">
       <el-icon>
         <Apple/>

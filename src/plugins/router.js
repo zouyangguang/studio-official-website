@@ -25,6 +25,7 @@ import TeamMember from "@/pages/ContentManagement/TeamMember/TeamMember.vue"
 
 //系统日志
 import ChangyuanLog from "@/pages/ContentManagement/ChangyuanLog/ChangyuanLog.vue"
+import MainUpdate from "@/pages/ContentManagement/MainUpdate.vue"
 import {ElMessage} from "element-plus";
 import axios from "axios";
 
@@ -43,6 +44,7 @@ const routes = [{
         {path: "ArticleLibrary", name: "ArticleLibrary", component: ArticleLibrary},
         {path: "TeamMember", name: "TeamMember", component: TeamMember},
         {path: "ChangyuanLog", name: "ChangyuanLog", component: ChangyuanLog},
+        {path: "MainUpdate", name: "MainUpdate", component: MainUpdate},
     ]
 }]
 
