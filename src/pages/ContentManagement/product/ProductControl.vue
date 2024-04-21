@@ -90,6 +90,8 @@
           :current-page="currentPage"
           style="margin-top:10px;justify-content:center"/>
     </div>
+<!--    <img-upload v-model="dialogTableVisible" @SelectedPicture="SelectedPicture" :SelectedPicture="SelectedImg"></img-upload>-->
+
   </div>
 </template>
 
@@ -97,7 +99,7 @@
 import {ref} from "vue";
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
-
+import ImgUpload from "@/components/ImgUpload.vue";
 // 存放网络获取的数据
 const tableData = ref([{
   "productId": 9999,
@@ -371,6 +373,15 @@ const deleteData = (scope) => {
     GetList(1, 5)
   })
 }
+
+// const SelectedImg=ref()
+// //控制选择图片是否显示
+// const dialogTableVisible = ref(false)
+// //获取选择的图片路径
+// const SelectedPicture = (imgList) => {
+//   formData.value.positionImgUrl = imgList[0].filePath
+//   dialogTableVisible.value = false
+// };
 </script>
 
 <style scoped>

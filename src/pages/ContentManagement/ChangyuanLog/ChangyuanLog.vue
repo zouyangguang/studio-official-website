@@ -26,6 +26,7 @@ const GetList = () => {
   // 网络请求数据
   axios.get("/changyuan/log").then((response) => {
     dataList.value = response.data.list
+    dataList.value.reverse()
   }).catch((err) => {
     console.log(err)
   })

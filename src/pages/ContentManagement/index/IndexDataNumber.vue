@@ -75,7 +75,8 @@
           style="margin-top:10px;justify-content:center"/>
     </div>
 
-    <img-upload v-model="dialogTableVisible" @SelectedPicture="SelectedPicture"></img-upload>
+    <img-upload v-model="dialogTableVisible" @SelectedPicture="SelectedPicture"
+                :SelectedPicture="[formData.positionImgUrl]"></img-upload>
 
   </div>
 </template>
@@ -86,11 +87,6 @@ import axios from 'axios';
 import {ElMessage} from 'element-plus'
 import ImgUpload from "@/components/ImgUpload.vue";
 
-const dialogTableVisible = ref(false)
-const SelectedPicture = (imgList) => {
-  //第一个参数:事件类型 第二个|三个|N参数即为注入数据
-  console.log(1,imgList)
-};
 
 // 存放操作的类型
 const options = [
@@ -117,13 +113,13 @@ const tableData = ref([
     "positionId": "999",
     "positionName": "1",
     "positionIntroduce": "1",
-    "positionDescriptionList": [1],
+    "positionDescriptionList": [],
     "positionImgUrl": "1"
   }, {
     "positionId": "1000",
     "positionName": "2",
     "positionIntroduce": "2",
-    "positionDescriptionList": [2],
+    "positionDescriptionList": [],
     "positionImgUrl": "2"
   }])
 //总数据量
@@ -344,6 +340,17 @@ const deleteData = (scope) => {
 
 }
 
+//控制选择图片是否显示
+const dialogTableVisible = ref(false)
+//获取选择的图片路径
+const SelectedPicture = (imgList) => {
+  if (imgList.length !== 0) {
+    formData.value.positionImgUrl = imgList[0].filePath
+  } else {
+    formData.value.positionImgUrl = ""
+  }
+  dialogTableVisible.value = false
+};
 
 </script>
 

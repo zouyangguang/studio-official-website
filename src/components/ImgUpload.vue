@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="请选择已有素材" width="800">
+  <el-dialog title="请选择已有素材" width="800" @open="open">
     <el-tabs v-model="activeName">
       <el-tab-pane label="已有素材" name="已有素材" style="height: 450px;">
         <el-scrollbar height="400px">
@@ -7,7 +7,7 @@
             <li v-for="(item,index) in MediaList" :key="item.mediaId"
                 @click="SelectedMediaList[index]=!SelectedMediaList[index]">
               <!--                :src="'http://43.139.254.175/'+item.filePath"-->
-              <el-image style="width:95%;height: 70%" fit="contain">
+              <el-image style="width:95%;height: 70%" :src="globalState.imgUrl+'/'+item.filePath" fit="contain">
                 <template #error>
                   <div class="image-slot">
                     <el-icon>
@@ -23,32 +23,28 @@
             </li>
           </ul>
         </el-scrollbar>
-        <el-button plain type="success" class="upload-button" @click="SelectedPicture">确定</el-button>
+        <div class="upload-button">
+          <el-button :icon="RefreshRight" circle type="primary" @click="refreshData"/>
+          <el-button plain type="success" @click="SelectedPicture">确定</el-button>
+        </div>
+
       </el-tab-pane>
       <el-tab-pane label="上传" name="上传" style="height: 450px; border: 1px solid rgba(255,255,255,0)">
-        <div class="show-img">
-          <ul>
-            <li v-for="imgSrc in imgUrl" :key="imgSrc">
-              <el-image
-                  style="width: 129px; height: 129px;border-radius: 5px;"
-                  :src="imgSrc"
-                  :zoom-rate="1.2"
-                  :max-scale="7"
-                  :min-scale="0.2"
-                  :preview-src-list="[imgSrc]"
-                  :initial-index="4"
-                  fit="cover"/>
-            </li>
+        <div>
+          <el-upload
+              :auto-upload="false"
+              list-type="picture-card"
+              :on-change="uploadChange"
+              :on-preview="handlePictureCardPreview">
+            <el-icon>
+              <Plus/>
+            </el-icon>
+          </el-upload>
 
-            <li class="show-img-addImg" @click="callAddImg">
-              <el-icon>
-                <Plus/>
-              </el-icon>
-            </li>
-          </ul>
+          <el-dialog v-model="dialogVisible">
+            <img w-full :src="dialogImageUrl" alt="Preview Image"/>
+          </el-dialog>
           <el-button plain type="success" class="upload-button" @click="imgUpload">上传</el-button>
-          <input v-show="false" multiple="multiple" ref="addImgInput" type="file" name="image" accept="image/*"
-                 @change="addImg">
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -56,71 +52,86 @@
 </template>
 
 <script setup>
-import {ref, defineEmits, computed} from "vue";
+import {ref, defineEmits, computed, inject, defineProps} from "vue";
 import {ElMessage} from 'element-plus'
 import axios from 'axios';
-import {Plus, Picture, Select} from '@element-plus/icons-vue'
-
-const emits = defineEmits(['SelectedPicture']);
-//确定按钮
-const SelectedPicture = () => {
-  emits("SelectedPicture", SelectedMediaListUrl.value);
-};
+import {Plus, Picture, Select, RefreshRight} from '@element-plus/icons-vue'
+//获取全局变量
+const globalState = inject('globalState')
+const props = defineProps(["SelectedPicture"])
 
 
-//打开对话框 图片
-// const dialogTableVisible = ref(true)
+//存放当前对话框
 const activeName = ref('已有素材')
-//存放选取的图片
-const imgArray = ref([])
-//图片结果
-const imgUrl = ref([])
 
-//存放 添加图片按钮
-const addImgInput = ref(null)
-
-//调用 选择添加图片 方法
-const callAddImg = () => {
-  addImgInput.value.click()
+//存放所有素材
+const MediaList = ref([])
+//获取所有图片
+const GetMediaList = () => {
+  axios.get("/api/query/Media/list").then((res) => {
+    MediaList.value = res.data
+    refreshSelectedMediaList()
+    // console.log(MediaList.value)
+  }).catch((err) => {
+    console.log("获取图片失败", err)
+  })
 }
-//选择添加图片
-const addImg = (e) => {
-  const newImgs = Object.values(e.target.files)
-  newImgs.forEach((img) => {
-    //判断是不是图片类型
-    if (img.type.split("/")[0] == 'image') {
-      //读取文件对象
-      let reader = new FileReader();
-      //读取文件
-      reader.readAsDataURL(img)
-      reader.onload = () => {
-        imgUrl.value.push(reader.result)
-      }
-      imgArray.value.push(img)
-      ElMessage({
-        showClose: true,
-        message: img.name + '选择成功',
-        type: 'success',
-      })
-    } else {
-      ElMessage({
-        showClose: true,
-        message: img.name + '文件类型不是图片类型哦',
-        type: 'warning',
-      })
+GetMediaList()
+// 存放是否选中图片列表的状态
+const SelectedMediaList = ref()
+// 刷新是否选中图片列表的状态
+const refreshSelectedMediaList = () => {
+  SelectedMediaList.value = MediaList.value.map((value) => {
+    for (let i = 0; i < props.SelectedPicture.length; i++) {
+      return value.filePath === props.SelectedPicture[i]
     }
   })
 }
-//图片上传服务器
+refreshSelectedMediaList()
+//每次Dialog 打开的回调
+const open = () => {
+  refreshSelectedMediaList()
+}
+
+// 存放选中的图片列表
+const SelectedMediaListUrl = computed(() => {
+  return MediaList.value.filter((value, index) => SelectedMediaList.value[index])
+})
+
+//刷新所有素材
+const refreshData = () => {
+  GetMediaList()
+  ElMessage({
+    message: '刷新成功',
+    type: 'success',
+  })
+}
+
+//要预览的图片
+const dialogImageUrl = ref('')
+//控制是否显示
+const dialogVisible = ref(false)
+//存放当前所有要上传的图片列表
+const uploadImg = ref()
+//文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
+const uploadChange = (uploadFile, uploadFiles) => {
+  uploadImg.value = uploadFiles
+}
+
+//预览图片
+const handlePictureCardPreview = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url
+  dialogVisible.value = true
+}
+//上传文件
 const imgUpload = () => {
-  imgArray.value.forEach((file) => {
+  uploadImg.value.forEach((file) => {
     axios({
       method: 'post',
       url: '/api/upload',
       headers: {"Content-Type": "multipart/form-data"},
-      data: {"files": file}
+      data: {"files": file.raw}
     }).then(function (response) {
-      // console.log(file)
       console.log(response)
       ElMessage({
         message: '上传成功',
@@ -134,33 +145,22 @@ const imgUpload = () => {
       })
     })
   })
+  setTimeout(() => {
+    GetMediaList()
+  }, 2)
+
 }
 
-//存放所有素材
-const MediaList = ref([])
-
-//获取所有图片
-const GetMediaList = () => {
-  axios.get("/api/query/Media/list").then((res) => {
-    MediaList.value = res.data
-    SelectedMediaList.value = MediaList.value.map(() => {
-      return false
-    })
-    // console.log(MediaList.value)
-  }).catch((err) => {
-    console.log("获取图片失败", err)
+const emits = defineEmits(['SelectedPicture']);
+//确定按钮
+const SelectedPicture = () => {
+  ElMessage({
+    message: '选择成功',
+    type: 'success',
   })
-}
-// 存放是否选中图片列表的状态
-const SelectedMediaList = ref(MediaList.value.map(() => {
-  return false
-}))
-// 存放选中的图片列表
-const SelectedMediaListUrl = computed(() => {
-  return MediaList.value.filter((value,index) => SelectedMediaList.value[index])
-})
+  emits("SelectedPicture", SelectedMediaListUrl.value);
+};
 
-GetMediaList()
 
 </script>
 

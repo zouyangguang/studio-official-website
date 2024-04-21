@@ -37,7 +37,7 @@ import {inject, ref} from "vue";
 import router from "@/plugins/router";
 
 const globalState = inject("globalState")
-console.log(globalState.memberName)
+
 /*切换主题*/
 const switchBtn = ref(false)
 const switchTopic = () => {

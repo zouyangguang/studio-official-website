@@ -284,7 +284,7 @@ const typeChange = () => {
     "memberSex": "男",
     "positionId": positionId.value,
     "phoneNum": "",
-    "entryDate": new Date(),
+    "entryDate":"",
     "dimissionDate": "",
     "memberIntroduce": "",
     "age": 18,
@@ -322,6 +322,7 @@ const typeChange = () => {
       "roleId": false,
       "password": false
     }
+
   }
 }
 //确认按钮
@@ -356,21 +357,10 @@ const IsEmpty = () => {
 }
 //搜索
 const seek = async () => {
-  console.log("搜索")
-  console.log(formData.value)
   //判断 id 不为空id不重复
   elTableDate.value = []
   //存放那个请求 请求成功
   const succeed = ref([false, false])
-  // //岗位id 不为空 请求 搜索
-  // if (formData.value.memberId !== "") {
-  //   await axios.get("/changyuan/admin/query/productsById/" + formData.value.memberId).then((response) => {
-  //     elTableDate.value.unshift(response.data)
-  //     succeed.value[0] = true
-  //   }).catch((err) => {
-  //     console.log("搜索id错误", err)
-  //   })
-  // }
   //岗位名称 不为空 请求 搜索
   if (formData.value.memberName !== "") {
     await axios.get("/changyuan/admin/query/TeammemberByName/" + formData.value.memberName).then((response) => {
