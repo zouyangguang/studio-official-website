@@ -28,8 +28,8 @@
         </div>
         <div>
           <span>性别</span>
-<!--          <el-input :disabled="formDataDisabled.memberSex" placeholder="性别"-->
-<!--                    v-model="formData.memberSex"/>-->
+          <!--          <el-input :disabled="formDataDisabled.memberSex" placeholder="性别"-->
+          <!--                    v-model="formData.memberSex"/>-->
           <el-radio-group v-model="formData.memberSex" :disabled="formDataDisabled.memberSex">
             <el-radio value="男" label="男" size="large">男</el-radio>
             <el-radio value="女" label="女" size="large">女</el-radio>
@@ -58,9 +58,10 @@
         </div>
         <div>
           <span>年龄</span>
-<!--          <el-input :disabled="formDataDisabled.age" placeholder="年龄"-->
-<!--                    v-model="formData.age"/>-->
-          <el-input-number style="width: 100%;"  v-model="formData.age" :disabled="formDataDisabled.age"  :min="1" :max="100"></el-input-number>
+          <!--          <el-input :disabled="formDataDisabled.age" placeholder="年龄"-->
+          <!--                    v-model="formData.age"/>-->
+          <el-input-number style="width: 100%;" v-model="formData.age" :disabled="formDataDisabled.age" :min="1"
+                           :max="100"></el-input-number>
         </div>
         <div>
           <span>电话号码</span>
@@ -74,6 +75,7 @@
               :disabled="formDataDisabled.entryDate"
               type="date"
               placeholder="入职日期"
+              value-format="YYYY-MM-DD"
               size="default"/>
         </div>
         <div>
@@ -83,6 +85,7 @@
               :disabled="formDataDisabled.dimissionDate"
               type="date"
               placeholder="修改时间"
+              value-format="YYYY-MM-DD"
               size="default"/>
         </div>
         <div>
@@ -139,9 +142,6 @@
 import {ref} from "vue";
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
-
-
-
 
 
 // 存放网络获取的数据
@@ -233,9 +233,9 @@ const formData = ref({
   "memberSex": "男",
   "positionId": positionId.value,
   "phoneNum": "",
-  "entryDate":  new Date(),
+  "entryDate": new Date(),
   "dimissionDate": "",
-  "memberIntroduce":"",
+  "memberIntroduce": "",
   "age": 18,
   "email": "",
   "roleId": roleId.value,
@@ -338,7 +338,7 @@ const confirm = () => {
 const IsEmpty = () => {
   const temp = ref(true)
   for (let key in formData.value) {
-    if (key !== 'memberId' && key !== 'dimissionDate') {
+    if (key !== 'memberId' && key !== 'dimissionDate' && key !== 'password') {
       if (formData.value[key] === undefined || formData.value[key] === null) {
         formData.value[key] = ""
       }
@@ -393,14 +393,14 @@ const seek = async () => {
     elTableDate.value = tableData.value
   }
 }
-//点击设置 输入框获取值
+//点击修改输入框获取值
 const GetSetData = (scope) => {
   //更改操作类型
   operation.value = options[2].value
   typeChange()
   positionId.value = positionDtoList.value.find((item) => item.positionName === scope.row.positionName).positionId
   roleId.value = RoleDtoList.value.find((item) => item.roleName === scope.row.roleName).roleId
-  console.log(roleId.value)
+  // console.log(roleId.value)
   formData.value = {
     "memberId": scope.row.memberId,
     "memberName": scope.row.memberName,
@@ -410,7 +410,7 @@ const GetSetData = (scope) => {
     "entryDate": scope.row.entryDate,
     "dimissionDate": scope.row.dimissionDate,
     "memberIntroduce": scope.row.memberIntroduce,
-    "age": scope.row.age,
+    "age":  Number(scope.row.age),
     "email": scope.row.email,
     "roleId": roleId.value,
     "password": ""
@@ -421,6 +421,7 @@ const GetSetData = (scope) => {
 //修改
 const setData = async () => {
   if (IsEmpty()) {
+
     formData.value.positionId = positionId.value
     formData.value.roleId = roleId.value
     await axios.put("/changyuan/admin/teammember/update", formData.value).then(() => {

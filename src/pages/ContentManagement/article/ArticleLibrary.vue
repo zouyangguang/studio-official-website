@@ -51,6 +51,7 @@
           <el-date-picker
               v-model="formData.createDate"
               :disabled="formDataDisabled.createDate"
+              value-format="YYYY-MM-DD"
               type="date"
               placeholder="创建时间"
               size="default"
@@ -61,6 +62,7 @@
           <el-date-picker
               v-model="formData.updateDate"
               :disabled="formDataDisabled.updateDate"
+              value-format="YYYY-MM-DD"
               type="date"
               placeholder="修改时间"
               size="default"/>
