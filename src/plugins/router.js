@@ -74,7 +74,7 @@ router.beforeEach((to, from, next) => {
             //查询数据判断是否成功
             axios.get("/changyuan/admin/query/position/list").catch((err) => {
                 //验证不通过
-                ElMessage({message: err.response.data.error + '请登录', type: 'warning',})
+                ElMessage({message: '请登录', type: 'warning',})
                 console.log(err.response)
                 //移除请求的headers
                 axios.defaults.headers.common.Authorization = null

@@ -150,24 +150,22 @@ const handlePictureCardPreview = (uploadFile) => {
   dialogVisible.value = true
 }
 //上传文件的图片路径
-const imgUrl = ref("")
+const imgUrl = ref([])
 //上传文件
-const imgUpload = () => {
-  uploadImg.value.forEach((file) => {
-    axios({
+const imgUpload = async () => {
+  imgUrl.value = []
+  for (const file of uploadImg.value) {
+    await axios({
       method: 'post',
       url: '/api/upload',
       headers: {"Content-Type": "multipart/form-data"},
       data: {"files": file.raw}
     }).then(function (response) {
-      console.log(response)
       ElMessage({
         message: '上传成功',
         type: 'success',
       })
-      imgUrl.value = response.data.data
-      SelectedPicture()
-
+      imgUrl.value.unshift(response.data.data)
     }).catch((err) => {
       console.log(err)
       ElMessage({
@@ -175,9 +173,10 @@ const imgUpload = () => {
         type: 'error',
       })
     })
-  })
+  }
   setTimeout(() => {
     GetMediaList()
+    SelectedPicture(imgUrl.value)
   }, 2)
 
 }
@@ -195,23 +194,25 @@ const SelectedPicture = () => {
   if (SelectedMediaListUrl.value.length !== 0) {
     item = SelectedMediaListUrl.value.map(value => value.filePath).join(",")
   }
-  //判断输入框内容不为空
-  if (props.SelectedPicture) {
-    //去掉注释 保留原来输入框内容
-    // item = props.SelectedPicture + ',' + item
-    if (imgUrl.value !== "") {
-      //判断是否有上传的图片
-      item = item + ',' + imgUrl.value
-    }
-    //去重
-    let temp = [...new Set(item.split(","))];
-    //判断返回单个图片,还是多个
-    if (props.isPicture === "true" || props.isPicture === true) {
-      //单个
-      item = temp[temp.length - 1]
+
+  //判断是否有上传的图片
+  if (imgUrl.value.length !== 0) {
+    if (props.SelectedPicture) {
+      //保留原来输入框内容
+      item = props.SelectedPicture + ',' + item
+      item = item + ',' + imgUrl.value.map(value => value).join(",")
     } else {
-      item = temp.map(value => value).join(",");
+      item = imgUrl.value.map(value => value).join(",")
     }
+  }
+  //去重
+  let temp = [...new Set(item.split(","))];
+  //判断返回单个图片,还是多个
+  if (props.isPicture === "true" || props.isPicture === true) {
+    //单个
+    item = temp[temp.length - 1]
+  } else {
+    item = temp.map(value => value).join(",");
   }
   emits("SelectedPicture", item);
 };
