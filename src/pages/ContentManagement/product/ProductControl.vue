@@ -29,27 +29,27 @@
         <div>
           <span>产品图标地址</span>
           <el-input :disabled="formDataDisabled.productLogoUrl" placeholder="产品图标地址"
-                    v-model="formData.productLogoUrl"/>
+                    v-model="formData.productLogoUrl" @click="openImgUpload('productLogoUrl',true)"/>
         </div>
         <div>
           <span>荣誉图地址</span>
           <el-input :disabled="formDataDisabled.honorImgUrl" placeholder="荣誉图地址(以逗号分割为一个地址)"
-                    v-model="formData.honorImgUrl"/>
+                    v-model="formData.honorImgUrl" @click="openImgUpload('honorImgUrl')"/>
         </div>
         <div>
           <span>平台二维码地址</span>
           <el-input :disabled="formDataDisabled.platformImgUrl" placeholder="平台二维码址(以逗号分割为一个地址)"
-                    v-model="formData.platformImgUrl"/>
+                    v-model="formData.platformImgUrl" @click="openImgUpload('platformImgUrl')"/>
         </div>
         <div>
           <span>作品截图地址</span>
           <el-input :disabled="formDataDisabled.screenshotImgUrl" placeholder="作品截图地址(以逗号分割为一个地址)"
-                    v-model="formData.screenshotImgUrl"/>
+                    v-model="formData.screenshotImgUrl" @click="openImgUpload('screenshotImgUrl')"/>
         </div>
         <div>
           <span>视频地址</span>
-          <el-input :disabled="formDataDisabled.videoUrl" placeholder="作品截图地址(以逗号分割为一个地址)"
-                    v-model="formData.videoUrl"/>
+          <el-input :disabled="formDataDisabled.videoUrl" placeholder="视频地址"
+                    v-model="formData.videoUrl" @click="openImgUpload('videoUrl',true)"/>
         </div>
         <div>
           <span>产品介绍</span>
@@ -90,7 +90,9 @@
           :current-page="currentPage"
           style="margin-top:10px;justify-content:center"/>
     </div>
-<!--    <img-upload v-model="dialogTableVisible" @SelectedPicture="SelectedPicture" :SelectedPicture="SelectedImg"></img-upload>-->
+    <!--选择图片对话框 isPicture false多选 true单选-->
+    <img-upload v-model="dialogTableVisible" :isPicture="isPicture" @SelectedPicture="SelectedPicture"
+                :SelectedPicture="SelectedImg"></img-upload>
 
   </div>
 </template>
@@ -100,6 +102,33 @@ import {ref} from "vue";
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
 import ImgUpload from "@/components/ImgUpload.vue";
+
+//对话框输入的数据
+const SelectedImg = ref("")
+//存放那个输入框打开的对话框
+const inputOpneKey = ref("")
+//是否为单个文件 false多选 true单选
+const isPicture = ref(false)
+// 对话框返回选中的图片列表
+const imgList = ref()
+//控制选择图片是否显示
+const dialogTableVisible = ref(false)
+//获取选择的图片路径
+const SelectedPicture = (item) => {
+  imgList.value = item
+  dialogTableVisible.value = false
+  formData.value[inputOpneKey.value] = item
+};
+
+//打开选择图片对话框
+const openImgUpload = (key, BoolPicture = false) => {
+  inputOpneKey.value = key
+  SelectedImg.value = formData.value[key]
+  isPicture.value = BoolPicture
+  dialogTableVisible.value = true
+}
+
+
 // 存放网络获取的数据
 const tableData = ref([{
   "productId": 9999,
@@ -289,7 +318,7 @@ const GetSetData = (scope) => {
     "videoUrl": scope.row.videoUrl,
     "productLogoUrl": scope.row.productLogoUrl
   }
-  console.log("修改", scope)
+  // console.log("修改", scope)
 }
 
 //修改
@@ -374,14 +403,7 @@ const deleteData = (scope) => {
   })
 }
 
-// const SelectedImg=ref()
-// //控制选择图片是否显示
-// const dialogTableVisible = ref(false)
-// //获取选择的图片路径
-// const SelectedPicture = (imgList) => {
-//   formData.value.positionImgUrl = imgList[0].filePath
-//   dialogTableVisible.value = false
-// };
+
 </script>
 
 <style scoped>

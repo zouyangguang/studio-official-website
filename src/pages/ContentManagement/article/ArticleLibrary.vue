@@ -27,10 +27,7 @@
           <el-input :disabled="formDataDisabled.articleTitle" placeholder="标题"
                     v-model="formData.articleTitle"/>
         </div>
-<!--        <div>-->
-<!--          <span>类别</span>-->
-<!--          <el-input :disabled="formDataDisabled.categoryId" placeholder="类别id" v-model="formData.categoryId"/>-->
-<!--        </div>-->
+
         <div>
           <span>作者</span>
           <el-input :disabled="formDataDisabled.author" placeholder="作者"
@@ -44,7 +41,7 @@
         <div>
           <span>主图路径</span>
           <el-input :disabled="formDataDisabled.articleImgUrl" placeholder="主图路径"
-                    v-model="formData.articleImgUrl"/>
+                    v-model="formData.articleImgUrl" @click="dialogTableVisible=true"/>
         </div>
         <div>
           <span>创建时间</span>
@@ -107,6 +104,9 @@
           :current-page="currentPage"
           style="margin-top:10px;justify-content:center"/>
     </div>
+    <!--选择图片对话框-->
+    <img-upload v-model="dialogTableVisible" :isPicture="true" @SelectedPicture="SelectedPicture"
+                :SelectedPicture="formData.articleImgUrl"></img-upload>
   </div>
 </template>
 
@@ -114,6 +114,16 @@
 import {ref} from "vue";
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
+import ImgUpload from "@/components/ImgUpload.vue";
+
+
+//控制选择图片是否显示
+const dialogTableVisible = ref(false)
+//获取选择的图片路径
+const SelectedPicture = (imgList) => {
+  formData.value.articleImgUrl = imgList
+  dialogTableVisible.value = false
+};
 
 // 存放网络获取的数据
 const tableData = ref([{
@@ -143,7 +153,7 @@ const GetList = (pageNum, pageSize) => {
     }
   }).then((response) => {
     tableData.value = response.data.list
-   // console.log("查询文章列表", response.data)
+    // console.log("查询文章列表", response.data)
     //总数据量
     total.value = response.data.total
     currentPage.value = pageNum

@@ -45,7 +45,7 @@
 
         </div>
         <div>
-          <span>角色名称{{ roleId }}</span>
+          <span>角色名称</span>
           <el-select :disabled="formDataDisabled.roleId" v-model="roleId" placeholder="请选择操作类型" size="default"
                      style="width: 100%;">
             <el-option v-for="item in RoleDtoList" :key="item.positionId" :label="item.roleName" :value="item.roleId"/>

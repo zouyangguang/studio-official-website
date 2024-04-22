@@ -75,8 +75,8 @@
           style="margin-top:10px;justify-content:center"/>
     </div>
 
-    <img-upload v-model="dialogTableVisible" @SelectedPicture="SelectedPicture"
-                :SelectedPicture="[formData.positionImgUrl]"></img-upload>
+    <img-upload v-model="dialogTableVisible" isPicture="true" @SelectedPicture="SelectedPicture"
+                :SelectedPicture="formData.positionImgUrl"></img-upload>
 
   </div>
 </template>
@@ -344,11 +344,7 @@ const deleteData = (scope) => {
 const dialogTableVisible = ref(false)
 //获取选择的图片路径
 const SelectedPicture = (imgList) => {
-  if (imgList.length !== 0) {
-    formData.value.positionImgUrl = imgList[0].filePath
-  } else {
-    formData.value.positionImgUrl = ""
-  }
+  formData.value.positionImgUrl = imgList
   dialogTableVisible.value = false
 };
 

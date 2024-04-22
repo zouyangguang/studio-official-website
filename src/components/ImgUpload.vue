@@ -5,7 +5,7 @@
         <el-scrollbar height="400px">
           <ul class="MediaList">
             <li v-for="(item,index) in MediaList" :key="item.mediaId"
-                @click="SelectedMediaList[index]=!SelectedMediaList[index]">
+                @click="SelectFile(index)">
               <!--                :src="'http://43.139.254.175/'+item.filePath"-->
               <el-image style="width:95%;height: 70%" :src="globalState.imgUrl+'/'+item.filePath" fit="contain">
                 <template #error>
@@ -42,7 +42,7 @@
           </el-upload>
 
           <el-dialog v-model="dialogVisible">
-            <img w-full :src="dialogImageUrl" alt="Preview Image"/>
+            <img :src="dialogImageUrl" alt="Preview Image"/>
           </el-dialog>
           <el-button plain type="success" class="upload-button" @click="imgUpload">上传</el-button>
         </div>
@@ -58,12 +58,12 @@ import axios from 'axios';
 import {Plus, Picture, Select, RefreshRight} from '@element-plus/icons-vue'
 //获取全局变量
 const globalState = inject('globalState')
-const props = defineProps(["SelectedPicture"])
-
+//SelectedPicture 输入框里的内容 isPicture是否为多个或单个文件
+//isPicture false多选 true单选
+const props = defineProps(["SelectedPicture", "isPicture"])
 
 //存放当前对话框
 const activeName = ref('已有素材')
-
 //存放所有素材
 const MediaList = ref([])
 //获取所有图片
@@ -81,15 +81,33 @@ GetMediaList()
 const SelectedMediaList = ref()
 // 刷新是否选中图片列表的状态
 const refreshSelectedMediaList = () => {
-  SelectedMediaList.value = MediaList.value.map((value) => {
-    for (let i = 0; i < props.SelectedPicture.length; i++) {
-      return value.filePath === props.SelectedPicture[i]
+  //判断输入框内容是否为空
+  if (props.SelectedPicture === undefined || props.SelectedPicture === "" || props.SelectedPicture === null) {
+    SelectedMediaList.value = MediaList.value.map(() => {
+      return false
+    })
+  } else {
+    if (props.isPicture === "true" || props.isPicture === true) {
+      SelectedMediaList.value = MediaList.value.map((value) => {
+        return value.filePath === props.SelectedPicture
+      })
+    } else {
+      //对输入框内容转为数组
+      let PictureArray = props.SelectedPicture.split(",")
+      SelectedMediaList.value = MediaList.value.map((value) => {
+        for (let i = 0; i < PictureArray.length; i++) {
+          if (value.filePath === PictureArray[i]) return true
+        }
+        return false
+      })
     }
-  })
+  }
+
 }
 refreshSelectedMediaList()
 //每次Dialog 打开的回调
 const open = () => {
+  imgUrl.value = ""
   refreshSelectedMediaList()
 }
 
@@ -97,6 +115,14 @@ const open = () => {
 const SelectedMediaListUrl = computed(() => {
   return MediaList.value.filter((value, index) => SelectedMediaList.value[index])
 })
+
+//点击选中文件
+const SelectFile = (index) => {
+  if (props.isPicture === "true" || props.isPicture === true) {
+    SelectedMediaList.value = SelectedMediaList.value.map(() => false)
+  }
+  SelectedMediaList.value[index] = !SelectedMediaList.value[index]
+}
 
 //刷新所有素材
 const refreshData = () => {
@@ -123,6 +149,8 @@ const handlePictureCardPreview = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url
   dialogVisible.value = true
 }
+//上传文件的图片路径
+const imgUrl = ref("")
 //上传文件
 const imgUpload = () => {
   uploadImg.value.forEach((file) => {
@@ -137,6 +165,9 @@ const imgUpload = () => {
         message: '上传成功',
         type: 'success',
       })
+      imgUrl.value = response.data.data
+      SelectedPicture()
+
     }).catch((err) => {
       console.log(err)
       ElMessage({
@@ -158,7 +189,31 @@ const SelectedPicture = () => {
     message: '选择成功',
     type: 'success',
   })
-  emits("SelectedPicture", SelectedMediaListUrl.value);
+  let item = ""
+
+  //判断有没有选中的图片列表
+  if (SelectedMediaListUrl.value.length !== 0) {
+    item = SelectedMediaListUrl.value.map(value => value.filePath).join(",")
+  }
+  //判断输入框内容不为空
+  if (props.SelectedPicture) {
+    //去掉注释 保留原来输入框内容
+    // item = props.SelectedPicture + ',' + item
+    if (imgUrl.value !== "") {
+      //判断是否有上传的图片
+      item = item + ',' + imgUrl.value
+    }
+    //去重
+    let temp = [...new Set(item.split(","))];
+    //判断返回单个图片,还是多个
+    if (props.isPicture === "true" || props.isPicture === true) {
+      //单个
+      item = temp[temp.length - 1]
+    } else {
+      item = temp.map(value => value).join(",");
+    }
+  }
+  emits("SelectedPicture", item);
 };
 
 
@@ -174,7 +229,7 @@ const SelectedPicture = () => {
   min-height: 325px;
   max-height: 70dvh;
   overflow-y: auto;
-  padding: 10px 0px;
+  padding: 10px 0;
   transition: 0.5s;
 }
 
@@ -189,24 +244,9 @@ const SelectedPicture = () => {
 
 }
 
-.show-img > ul > .show-img-addImg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  transition: 0.5s;
-}
-
-.show-img > ul > .show-img-addImg:hover {
-  --hover-color: #80c5ff;
-  color: var(--hover-color);
-  border: 1px dashed var(--hover-color);
-}
-
 .upload-button {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   right: 0;
 }
 
