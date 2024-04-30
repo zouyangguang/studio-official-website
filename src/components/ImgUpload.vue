@@ -6,7 +6,6 @@
           <ul class="MediaList">
             <li v-for="(item,index) in MediaList" :key="item.mediaId"
                 @click="SelectFile(index)">
-              <!--                :src="'http://43.139.254.175/'+item.filePath"-->
               <el-image style="width:95%;height: 70%" :src="globalState.imgUrl+'/'+item.filePath" fit="contain">
                 <template #error>
                   <div class="image-slot">
@@ -267,6 +266,8 @@ const SelectedPicture = () => {
   position: relative;
   box-sizing: border-box;
   cursor: pointer;
+  overflow: hidden;
+  font-size: 1vw;
 }
 
 .MediaList > li:hover {

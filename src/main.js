@@ -9,12 +9,12 @@ import 'swiper/css';
 import "@/plugins/ErrorLoop"
 import {ref} from "vue";
 import axios from 'axios';
-axios.defaults.baseURL="http://43.139.254.175:8080"
+axios.defaults.baseURL="http://43.139.254.175:8081"
 //公共属性
 const globalState = ref({
     login:JSON.parse(localStorage.getItem("login")),//token
     memberName:localStorage.getItem("memberName"),//用户名
-    IPAddress: "http://43.139.254.175:8080",//访问接口地址,
+    IPAddress: "http://43.139.254.175:8081",//访问接口地址,
     imgUrl:"http://43.139.254.175"//文件资源访问路径
 })
 const app = createApp(App)
