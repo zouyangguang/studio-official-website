@@ -97,13 +97,15 @@ const SelectedMediaListUrl = computed(() => {
 })
 
 //删除图片
-const DeleteFile = () => {
-
-  SelectedMediaListUrl.value.forEach(item => {
-    axios({
+const DeleteFile = async () => {
+  ElMessage({
+    message: '正在删除中'
+  })
+  for (const item of SelectedMediaListUrl.value) {
+    await axios({
       method: 'post',
       url: '/api/file/delete',
-      data: {"mediaId": item.mediaId}
+      params: {"mediaId": item.mediaId}
     }).then(function (response) {
       ElMessage({
         message: '删除成功',
@@ -111,14 +113,15 @@ const DeleteFile = () => {
       })
       console.log("删除", response.data.data)
     }).catch((err) => {
-      console.log("删除失败",err)
+      console.log("删除失败", err)
       ElMessage({
         message: '删除失败',
         type: 'error',
       })
     })
-  })
-
+  }
+  GetMediaList()
+  SelectedMediaList.value = MediaList.value.map(() => false)
 }
 
 
