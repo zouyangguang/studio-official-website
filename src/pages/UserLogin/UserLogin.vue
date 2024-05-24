@@ -40,15 +40,22 @@ const data = ref({
 const login = async () => {
   if (IsEmpty(data.value)) {
     await axios.post("/changyuan/user/login", data.value).then((res) => {
-      ElMessage({
-        message: '登录成功',
-        type: 'success',
-      })
-      localStorage.setItem("login", JSON.stringify(res.data.data))
-      localStorage.setItem("memberName", data.value.memberName)
-      globalState.value.login = JSON.parse(localStorage.getItem("login"))
-      globalState.value.memberName = localStorage.getItem("memberName")
-      router.push("/")
+      if (res.data.code === 20002) {
+        ElMessage({
+          message: res.data.message,
+          type: 'warning',
+        })
+      } else {
+        ElMessage({
+          message: '登录成功',
+          type: 'success',
+        })
+        localStorage.setItem("login", JSON.stringify(res.data.data))
+        localStorage.setItem("memberName", data.value.memberName)
+        globalState.value.login = JSON.parse(localStorage.getItem("login"))
+        globalState.value.memberName = localStorage.getItem("memberName")
+        router.push("/")
+      }
     }).catch((err) => {
       ElMessage({
         message: '登录失败',

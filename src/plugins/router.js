@@ -89,7 +89,6 @@ router.beforeEach((to, from, next) => {
                     next()
                 }
             })
-
         }
     } else {
         //正常跳转
